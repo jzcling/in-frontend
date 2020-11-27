@@ -67,10 +67,15 @@ export default {
                 // link: '/'
                 // },
                 {
-                title: 'Profile',
-                icon: 'mdi-account',
-                link: '/'
-                }
+                    title: 'Profile',
+                    icon: 'mdi-account',
+                    link: '/'
+                },
+                {
+                    title: 'Projects',
+                    icon: 'mdi-github',
+                    link: '/projects'
+                },
             ]
         }
     },
