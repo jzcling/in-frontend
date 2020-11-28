@@ -43,7 +43,7 @@
                                         dark
                                         v-bind="size"
                                         @click="scanProject(project)"
-                                        :disabled="project.scanning"
+                                        :disabled="disableScan"
                                     >
                                         Scan
                                     </v-btn>
@@ -108,6 +108,26 @@
                 </v-col>
             </v-row>
         </template>
+
+        <v-dialog
+            v-model="scanDialog"
+            scrollable
+            max-width="500"
+        >
+            <v-card>
+                <v-card-title>Scanning</v-card-title>
+                <v-card-text>
+                    Please allow some time for the scan to complete. 
+                    You should be able to see your results here when you refresh after 5 minutes.
+                </v-card-text>
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn
+                        color="error"
+                        @click="scanDialog = false"
+                    >Close</v-btn>
+                </v-card-actions>
+        </v-dialog>
     </v-container>
 </template>
 
@@ -127,6 +147,9 @@ export default {
             projects: [],
 
             projectDialog: false,
+            scanDialog : false,
+
+            disableScan: false,
         }
     },
     computed: {
@@ -150,6 +173,8 @@ export default {
         },
         async scanProject(project) {
             this.loading = true;
+            this.disableScan = true;
+            this.scanDialog = true;
             try {
                 var response = await this.$axios.post(this.$apiBase + '/v1/projects/' + project.id + '/scan');
                 console.log(response);
@@ -157,7 +182,6 @@ export default {
                 this.error = e;
             } finally {
                 this.loading = false;
-                project.scanning = true;
             }
         },
         formatDate(date) {
