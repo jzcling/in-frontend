@@ -40,7 +40,7 @@
                                 <div>
                                     <v-btn
                                         color="indigo"
-                                        dark
+                                        :dark="!disableScan"
                                         v-bind="size"
                                         @click="scanProject(project)"
                                         :disabled="disableScan"
@@ -165,7 +165,6 @@ export default {
             try {
                 var response = await this.$axios.get(this.$apiBase + '/v1/projects?candidate_id=' + this.$auth.user['https://hubbedin.com/id']);
                 this.projects = response.data.projects;
-                console.log(this.projects);
             } catch (e) {
                 this.error = e;
             } finally {
@@ -177,8 +176,7 @@ export default {
             this.disableScan = true;
             this.scanDialog = true;
             try {
-                var response = await this.$axios.post(this.$apiBase + '/v1/projects/' + project.id + '/scan');
-                console.log(response);
+                await this.$axios.post(this.$apiBase + '/v1/projects/' + project.id + '/scan');
             } catch (e) {
                 this.error = e;
             } finally {
