@@ -24,6 +24,7 @@
                         hide-details="auto"
                     ></v-text-field>
                 </v-col>
+            </v-row>
         </v-card-text>
 
         <v-card-actions>
@@ -63,7 +64,10 @@ export default {
             try {
                 var response;
                 if (this.method === 'post') {
-                    response = await this.$axios.post(this.$apiBase + '/v1/projects', this.edit);
+                    response = await this.$axios.post(this.$apiBase + '/v1/projects', {
+                        project: this.edit,
+                        candidateId: this.$auth.user['https://hubbedin.com/id']
+                    });
                 } else {
                     response = await this.$axios.put(this.$apiBase + '/v1/projects/' + this.edit.id, this.edit);
                 }
