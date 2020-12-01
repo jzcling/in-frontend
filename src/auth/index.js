@@ -136,10 +136,15 @@ export const useAuth0 = ({
                 this.user = await this.auth0Client.getUser();
                 if (this.user && !this.user[this.namespace]) {
                     await this.createCandidate(this.user);
+                    // get user again as auth0 user is updated by the server
+                    // with the newly created candidate id
+                    this.user = await this.auth0Client.getUser();
                 }
 
-                // get access token
-                this.token = await this.auth0Client.getTokenSilently({audience: this.audience});
+                if (this.user) {
+                    // get access token
+                    this.token = await this.auth0Client.getTokenSilently({audience: this.audience});
+                }
 
                 this.loading = false;
             }
