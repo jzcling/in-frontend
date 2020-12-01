@@ -66,7 +66,7 @@ export default {
                 if (this.method === 'post') {
                     response = await this.$axios.post(this.$apiBase + '/v1/projects', {
                         project: this.edit,
-                        candidateId: this.$auth.user['https://hubbedin.com/id']
+                        candidateId: this.$auth.user[this.$auth.namespace]
                     });
                 } else {
                     response = await this.$axios.put(this.$apiBase + '/v1/projects/' + this.edit.id, this.edit);

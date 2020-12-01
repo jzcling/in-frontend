@@ -25,9 +25,13 @@ export const useAuth0 = ({
                 loading: true,
                 isAuthenticated: false,
                 user: {},
+                token: null,
                 auth0Client: null,
                 popupOpen: false,
-                error: null
+                error: null,
+                
+                namespace: "https://hubbedin/id",
+                audience: "https://api.hubbedin.com"
             };
         },
         methods: {
@@ -93,7 +97,7 @@ export const useAuth0 = ({
                         contact_number: user.phone_number || "+",
                         picture: user.picture
                     });
-                    this.user['https://hubbedin.com/id'] = response.id;
+                    this.user[this.namespace] = response.id;
                 } catch (e) {
                     this.error = e;
                 } finally {
@@ -130,10 +134,12 @@ export const useAuth0 = ({
                 // Initialize our internal authentication state
                 this.isAuthenticated = await this.auth0Client.isAuthenticated();
                 this.user = await this.auth0Client.getUser();
-
-                if (this.user && !this.user['https://hubbedin.com/id']) {
+                if (this.user && !this.user[this.namespace]) {
                     await this.createCandidate(this.user);
                 }
+
+                // get access token
+                this.token = await this.auth0Client.getTokenSilently({audience: this.audience});
 
                 this.loading = false;
             }

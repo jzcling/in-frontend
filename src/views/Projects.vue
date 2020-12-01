@@ -163,7 +163,7 @@ export default {
         async getProjects() {
             this.loading = true;
             try {
-                var response = await this.$axios.get(this.$apiBase + '/v1/projects?candidate_id=' + this.$auth.user['https://hubbedin.com/id']);
+                var response = await this.$axios.get(this.$apiBase + '/v1/projects?candidate_id=' + this.$auth.user[this.$auth.namespace]);
                 this.projects = response.data.projects;
             } catch (e) {
                 this.error = e;

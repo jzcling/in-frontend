@@ -341,8 +341,13 @@ export default {
     methods: {
         async getProfile() {
             this.loading = true;
+            console.log(this.$auth.token);
             try {
-                var response = await this.$axios.get(this.$apiBase + '/v1/candidates/' + this.$auth.user['https://hubbedin.com/id']);
+                var response = await this.$axios.get(this.$apiBase + '/v1/candidates/' + this.$auth.user[this.$auth.namespace], {
+                    headers: {
+                        Authorization: 'Bearer ' + this.$auth.token
+                    }
+                });
                 this.candidate = response.data;
                 console.log(this.candidate);
             } catch (e) {
