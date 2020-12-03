@@ -340,6 +340,11 @@ export default {
     },
     methods: {
         async getProfile() {
+            if (!this.$auth.userId) {
+                location.reload();
+                return;
+            }
+
             this.loading = true;
             try {
                 var response = await this.$axios.get(this.$apiBase + '/v1/candidates/' + this.$auth.userId, {
@@ -379,8 +384,7 @@ export default {
         this.getProfile();
     },
     watch: {
-        '$route': 'getProfile',
-        '$auth.userId': 'getProfile'
+        '$route': 'getProfile'
     }
 }
 </script>
