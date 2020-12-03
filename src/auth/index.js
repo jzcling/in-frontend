@@ -94,7 +94,7 @@ export const useAuth0 = ({
                         first_name: user.given_name || user.name,
                         last_name: user.family_name || user.name,
                         email: user.email,
-                        contact_number: user.phone_number || "+",
+                        contact_number: user.phone_number,
                         picture: user.picture
                     });
                     this.user[this.namespace] = response.id;
