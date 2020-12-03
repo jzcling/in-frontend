@@ -134,7 +134,11 @@ export default {
         async getInstitutions() {
             this.loading = true;
             try {
-                var response = await this.$axios.get(this.$apiBase + '/v1/institutions');
+                var response = await this.$axios.get(this.$apiBase + '/v1/institutions', {
+                    headers: {
+                        Authorization: 'Bearer ' + this.$auth.token
+                    }
+                });
                 this.institutions = response.data.institutions;
             } catch (e) {
                 this.error = e;
@@ -145,7 +149,11 @@ export default {
         async getCourses() {
             this.loading = true;
             try {
-                var response = await this.$axios.get(this.$apiBase + '/v1/courses');
+                var response = await this.$axios.get(this.$apiBase + '/v1/courses', {
+                    headers: {
+                        Authorization: 'Bearer ' + this.$auth.token
+                    }
+                });
                 this.courses = response.data.courses;
             } catch (e) {
                 this.error = e;
@@ -159,6 +167,10 @@ export default {
                 var response = await this.$axios.post(this.$apiBase + '/v1/institutions', {
                     name: institution.name,
                     country: institution.country
+                }, {
+                    headers: {
+                        Authorization: 'Bearer ' + this.$auth.token
+                    }
                 });
             } catch (e) {
                 this.error = e;
@@ -173,6 +185,10 @@ export default {
                 var response = await this.$axios.post(this.$apiBase + '/v1/courses', {
                     level: course.level,
                     name: course.name
+                }, {
+                    headers: {
+                        Authorization: 'Bearer ' + this.$auth.token
+                    }
                 });
             } catch (e) {
                 this.error = e;
@@ -221,6 +237,10 @@ export default {
                     institutionId: academic.institution.id,
                     courseId: academic.course.id,
                     yearObtained: academic.yearObtained
+                }, {
+                    headers: {
+                        Authorization: 'Bearer ' + this.$auth.token
+                    }
                 });
             } catch (e) {
                 this.error = e;
@@ -231,7 +251,11 @@ export default {
         async deleteAcademic(academic) {
             this.loading = true;
             try {
-                await this.$axios.delete(this.$apiBase + '/v1/academichistories/' + academic.id);
+                await this.$axios.delete(this.$apiBase + '/v1/academichistories/' + academic.id, {
+                    headers: {
+                        Authorization: 'Bearer ' + this.$auth.token
+                    }
+                });
             } catch (e) {
                 this.error = e;
             } finally {

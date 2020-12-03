@@ -163,7 +163,11 @@ export default {
         async getProjects() {
             this.loading = true;
             try {
-                var response = await this.$axios.get(this.$apiBase + '/v1/projects?candidate_id=' + this.$auth.userId);
+                var response = await this.$axios.get(this.$apiBase + '/v1/projects?candidate_id=' + this.$auth.userId, {
+                    headers: {
+                        Authorization: 'Bearer ' + this.$auth.token
+                    }
+                });
                 this.projects = response.data.projects;
             } catch (e) {
                 this.error = e;
@@ -176,7 +180,11 @@ export default {
             this.disableScan = true;
             this.scanDialog = true;
             try {
-                await this.$axios.post(this.$apiBase + '/v1/projects/' + project.id + '/scan');
+                await this.$axios.post(this.$apiBase + '/v1/projects/' + project.id + '/scan', {
+                    headers: {
+                        Authorization: 'Bearer ' + this.$auth.token
+                    }
+                });
             } catch (e) {
                 this.error = e;
             } finally {

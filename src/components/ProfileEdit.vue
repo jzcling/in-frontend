@@ -372,7 +372,11 @@ export default {
         async updateCandidate() {
             this.loading = true;
             try {
-                await this.$axios.put(this.$apiBase + '/v1/candidates/' + this.edit.id, this.edit);
+                await this.$axios.put(this.$apiBase + '/v1/candidates/' + this.edit.id, this.edit, {
+                    headers: {
+                        Authorization: 'Bearer ' + this.$auth.token
+                    }
+                });
             } catch (e) {
                 this.error = e;
             } finally {

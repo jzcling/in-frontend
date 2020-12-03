@@ -57,7 +57,11 @@ export default {
         async getSkills() {
             this.loading = true;
             try {
-                var response = await this.$axios.get(this.$apiBase + '/v1/skills');
+                var response = await this.$axios.get(this.$apiBase + '/v1/skills', {
+                    headers: {
+                        Authorization: 'Bearer ' + this.$auth.token
+                    }
+                });
                 this.skills = response.data.skills;
             } catch (e) {
                 this.error = e;
@@ -70,6 +74,10 @@ export default {
             try {
                 var response = await this.$axios.post(this.$apiBase + '/v1/skills', {
                     name: skill
+                }, {
+                    headers: {
+                        Authorization: 'Bearer ' + this.$auth.token
+                    }
                 });
             } catch (e) {
                 this.error = e;
@@ -106,6 +114,10 @@ export default {
                 await this.$axios.post(this.$apiBase + '/v1/userskills', {
                     candidate_id: this.candidate.id,
                     skill_id: skill.id
+                }, {
+                    headers: {
+                        Authorization: 'Bearer ' + this.$auth.token
+                    }
                 });
             } catch (e) {
                 this.error = e;
@@ -116,7 +128,11 @@ export default {
         async deleteUserSkill(userSkill) {
             this.loading = true;
             try {
-                await this.$axios.delete(this.$apiBase + '/v1/userskills/' + userSkill.id);
+                await this.$axios.delete(this.$apiBase + '/v1/userskills/' + userSkill.id, {
+                    headers: {
+                        Authorization: 'Bearer ' + this.$auth.token
+                    }
+                });
             } catch (e) {
                 this.error = e;
             } finally {

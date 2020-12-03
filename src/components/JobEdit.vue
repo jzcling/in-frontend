@@ -234,7 +234,11 @@ export default {
         async getCompanies() {
             this.loading = true;
             try {
-                var response = await this.$axios.get(this.$apiBase + '/v1/companies');
+                var response = await this.$axios.get(this.$apiBase + '/v1/companies', {
+                    headers: {
+                        Authorization: 'Bearer ' + this.$auth.token
+                    }
+                });
                 this.companies = response.data.companies;
             } catch (e) {
                 this.error = e;
@@ -245,7 +249,11 @@ export default {
         async getDepartments() {
             this.loading = true;
             try {
-                var response = await this.$axios.get(this.$apiBase + '/v1/departments');
+                var response = await this.$axios.get(this.$apiBase + '/v1/departments', {
+                    headers: {
+                        Authorization: 'Bearer ' + this.$auth.token
+                    }
+                });
                 this.departments = response.data.departments;
             } catch (e) {
                 this.error = e;
@@ -258,6 +266,10 @@ export default {
             try {
                 var response = await this.$axios.post(this.$apiBase + '/v1/companies', {
                     name: company
+                }, {
+                    headers: {
+                        Authorization: 'Bearer ' + this.$auth.token
+                    }
                 });
             } catch (e) {
                 this.error = e;
@@ -271,6 +283,10 @@ export default {
             try {
                 var response = await this.$axios.post(this.$apiBase + '/v1/departments', {
                     name: department
+                }, {
+                    headers: {
+                        Authorization: 'Bearer ' + this.$auth.token
+                    }
                 });
             } catch (e) {
                 this.error = e;
@@ -331,6 +347,10 @@ export default {
                     salaryCurrency: job.salaryCurrency,
                     salary: job.salary,
                     description: job.description
+                }, {
+                    headers: {
+                        Authorization: 'Bearer ' + this.$auth.token
+                    }
                 });
             } catch (e) {
                 this.error = e;
@@ -341,7 +361,11 @@ export default {
         async deleteJob(job) {
             this.loading = true;
             try {
-                await this.$axios.delete(this.$apiBase + '/v1/jobhistories/' + job.id);
+                await this.$axios.delete(this.$apiBase + '/v1/jobhistories/' + job.id, {
+                    headers: {
+                        Authorization: 'Bearer ' + this.$auth.token
+                    }
+                });
             } catch (e) {
                 this.error = e;
             } finally {
