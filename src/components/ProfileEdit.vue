@@ -369,11 +369,10 @@ export default {
         },
     },
     methods: {
-        async updateedit() {
+        async updateCandidate() {
             this.loading = true;
             try {
-                var response = await this.$axios.put(this.$apiBase + '/v1/edits/' + this.edit.id, this.edit);
-                console.log(response);
+                await this.$axios.put(this.$apiBase + '/v1/candidates/' + this.edit.id, this.edit);
             } catch (e) {
                 this.error = e;
             } finally {
@@ -381,7 +380,7 @@ export default {
             }
         },
         async save() {
-            await this.updateedit();
+            await this.updateCandidate();
             this.$emit('close');
         }
     },

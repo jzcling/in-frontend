@@ -71,7 +71,6 @@ export default {
                 var response = await this.$axios.post(this.$apiBase + '/v1/skills', {
                     name: skill
                 });
-                console.log(response);
             } catch (e) {
                 this.error = e;
             } finally {
@@ -104,11 +103,10 @@ export default {
         async createUserSkill(skill) {
             this.loading = true;
             try {
-                var response = await this.$axios.post(this.$apiBase + '/v1/userskills', {
+                await this.$axios.post(this.$apiBase + '/v1/userskills', {
                     candidate_id: this.candidate.id,
                     skill_id: skill.id
                 });
-                console.log(response);
             } catch (e) {
                 this.error = e;
             } finally {

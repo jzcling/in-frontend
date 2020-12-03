@@ -136,7 +136,6 @@ export default {
             try {
                 var response = await this.$axios.get(this.$apiBase + '/v1/institutions');
                 this.institutions = response.data.institutions;
-                console.log(this.institutions);
             } catch (e) {
                 this.error = e;
             } finally {
@@ -148,7 +147,6 @@ export default {
             try {
                 var response = await this.$axios.get(this.$apiBase + '/v1/courses');
                 this.courses = response.data.courses;
-                console.log(this.courses);
             } catch (e) {
                 this.error = e;
             } finally {
@@ -162,7 +160,6 @@ export default {
                     name: institution.name,
                     country: institution.country
                 });
-                console.log(response);
             } catch (e) {
                 this.error = e;
             } finally {
@@ -177,7 +174,6 @@ export default {
                     level: course.level,
                     name: course.name
                 });
-                console.log(response);
             } catch (e) {
                 this.error = e;
             } finally {
@@ -204,7 +200,6 @@ export default {
                     course = crResponse.data;
                 }
 
-                console.log(this.candidate.academics.includes(academic));
                 // create academic history if not in current history
                 if (!this.candidate.academics.includes(academic)) {
                     this.createAcademic(academic);
@@ -221,13 +216,12 @@ export default {
         async createAcademic(academic) {
             this.loading = true;
             try {
-                var response = await this.$axios.post(this.$apiBase + '/v1/academichistories', {
+                await this.$axios.post(this.$apiBase + '/v1/academichistories', {
                     candidateId: this.candidate.id,
                     institutionId: academic.institution.id,
                     courseId: academic.course.id,
                     yearObtained: academic.yearObtained
                 });
-                console.log(response);
             } catch (e) {
                 this.error = e;
             } finally {

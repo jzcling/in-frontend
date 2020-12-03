@@ -25,6 +25,7 @@ export const useAuth0 = ({
                 loading: true,
                 isAuthenticated: false,
                 user: {},
+                userId: null,
                 token: null,
                 auth0Client: null,
                 popupOpen: false,
@@ -53,7 +54,6 @@ export const useAuth0 = ({
             },
             /** Handles the callback when logging in using a redirect */
             async handleRedirectCallback() {
-                console.log('redirected');
                 this.loading = true;
                 try {
                     await this.auth0Client.handleRedirectCallback();
@@ -91,8 +91,8 @@ export const useAuth0 = ({
                 try {
                     var response = await this.$axios.post(this.$apiBase + '/v1/candidates', {
                         auth_id: user.sub,
-                        first_name: user.given_name,
-                        last_name: user.family_name,
+                        first_name: user.given_name || user.name,
+                        last_name: user.family_name || user.name,
                         email: user.email,
                         contact_number: user.phone_number || "+",
                         picture: user.picture
@@ -136,12 +136,10 @@ export const useAuth0 = ({
                 this.user = await this.auth0Client.getUser();
                 if (this.user && !this.user[this.namespace]) {
                     await this.createCandidate(this.user);
-                    // get user again as auth0 user is updated by the server
-                    // with the newly created candidate id
-                    this.user = await this.auth0Client.getUser();
                 }
 
                 if (this.user) {
+                    this.userId = this.user[this.namespace];
                     // get access token
                     this.token = await this.auth0Client.getTokenSilently({audience: this.audience});
                 }

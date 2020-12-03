@@ -341,15 +341,13 @@ export default {
     methods: {
         async getProfile() {
             this.loading = true;
-            console.log(this.$auth.token);
             try {
-                var response = await this.$axios.get(this.$apiBase + '/v1/candidates/' + this.$auth.user[this.$auth.namespace], {
+                var response = await this.$axios.get(this.$apiBase + '/v1/candidates/' + this.$auth.userId, {
                     headers: {
                         Authorization: 'Bearer ' + this.$auth.token
                     }
                 });
                 this.candidate = response.data;
-                console.log(this.candidate);
             } catch (e) {
                 this.error = e;
             } finally {
@@ -381,7 +379,8 @@ export default {
         this.getProfile();
     },
     watch: {
-        '$route': 'getProfile'
+        '$route': 'getProfile',
+        '$auth.userId': 'getProfile'
     }
 }
 </script>

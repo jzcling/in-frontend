@@ -236,7 +236,6 @@ export default {
             try {
                 var response = await this.$axios.get(this.$apiBase + '/v1/companies');
                 this.companies = response.data.companies;
-                console.log(this.companies);
             } catch (e) {
                 this.error = e;
             } finally {
@@ -248,7 +247,6 @@ export default {
             try {
                 var response = await this.$axios.get(this.$apiBase + '/v1/departments');
                 this.departments = response.data.departments;
-                console.log(this.departments);
             } catch (e) {
                 this.error = e;
             } finally {
@@ -261,7 +259,6 @@ export default {
                 var response = await this.$axios.post(this.$apiBase + '/v1/companies', {
                     name: company
                 });
-                console.log(response);
             } catch (e) {
                 this.error = e;
             } finally {
@@ -275,7 +272,6 @@ export default {
                 var response = await this.$axios.post(this.$apiBase + '/v1/departments', {
                     name: department
                 });
-                console.log(response);
             } catch (e) {
                 this.error = e;
             } finally {
@@ -323,7 +319,7 @@ export default {
             }
 
             try {
-                var response = await this.$axios.post(this.$apiBase + '/v1/jobhistories', {
+                await this.$axios.post(this.$apiBase + '/v1/jobhistories', {
                     candidateId: this.candidate.id,
                     companyId: job.company.id,
                     departmentId: job.department.id,
@@ -336,7 +332,6 @@ export default {
                     salary: job.salary,
                     description: job.description
                 });
-                console.log(response);
             } catch (e) {
                 this.error = e;
             } finally {
@@ -382,10 +377,8 @@ export default {
         // startDateMenu: {
         //     handler (val) {
         //         for (let i of Object.keys(val)) {
-        //             console.log(val[i]);
         //             val[i] && setTimeout(() => (this.$refs['startpicker'+i].activePicker = 'YEAR'));
         //         }
-        //         console.log(this.$refs);
         //     },
         //     deep: true
         // },
