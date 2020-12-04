@@ -182,7 +182,7 @@ export default {
             this.disableScan = true;
             this.scanDialog = true;
             try {
-                await this.$axios.post(this.$apiBase + '/v1/projects/' + project.id + '/scan', this.axiosConfig);
+                await this.$axios.post(this.$apiBase + '/v1/projects/' + project.id + '/scan', null, this.axiosConfig);
             } catch (e) {
                 this.error = e;
             } finally {
