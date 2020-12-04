@@ -33,6 +33,8 @@
                                     outlined
                                     dense
                                     hide-details="auto"
+                                    @blur="handleInstitution(academic); $v.edit.academics.$each[index].institution.name.$touch()"
+                                    :error-messages="validationErrors($v.edit.academics.$each[index].institution.name, 'Institution')"
                                 ></v-combobox>
                             </v-col>
 
@@ -43,6 +45,8 @@
                                     outlined
                                     dense
                                     hide-details="auto"
+                                    @blur="$v.edit.academics.$each[index].institution.country.$touch()"
+                                    :error-messages="validationErrors($v.edit.academics.$each[index].institution.country, 'Country')"
                                 ></v-text-field>
                             </v-col>
                         </v-row>
@@ -56,6 +60,8 @@
                             outlined
                             dense
                             hide-details="auto"
+                            @blur="$v.edit.academics.$each[index].yearObtained.$touch()"
+                            :error-messages="validationErrors($v.edit.academics.$each[index].yearObtained, 'Year Obtained')"
                         ></v-text-field>
                     </v-col>
 
@@ -68,6 +74,8 @@
                             outlined
                             dense
                             hide-details="auto"
+                            @blur="handleCourse(academic); $v.edit.academics.$each[index].course.name.$touch()"
+                            :error-messages="validationErrors($v.edit.academics.$each[index].course.name, 'Course')"
                         ></v-combobox>
                     </v-col>
 
@@ -79,6 +87,8 @@
                             outlined
                             dense
                             hide-details="auto"
+                            @blur="$v.edit.academics.$each[index].course.level.$touch()"
+                            :error-messages="validationErrors($v.edit.academics.$each[index].course.level, 'Level')"
                         ></v-select>
                     </v-col>
                 </v-row>
@@ -101,8 +111,12 @@
 </template>
 
 <script>
+import { validationMixin } from 'vuelidate'
+import { required } from 'vuelidate/lib/validators'
+
 export default {
     name: 'AcademicEdit',
+    mixins: [validationMixin],
     props: {
         candidate: {
             required: true,
@@ -287,6 +301,31 @@ export default {
                 },
                 yearObtained: null
             });
+        },
+        handleInstitution(academic) {
+            if (!academic.institution) {
+                return
+            }
+            if (!academic.institution.name) {
+                academic.institution = {
+                    name: academic.institution.trim()
+                }
+            }
+        },
+        handleCourse(academic) {
+            if (!academic.course) {
+                return
+            }
+            if (!academic.course.name) {
+                academic.course = {
+                    name: academic.course.trim()
+                }
+            }
+        },
+        validationErrors(test, name) {
+            const errors = [];
+            !test.required && errors.push(name + ' is required.')
+            return errors
         }
     },
     created() {
@@ -294,6 +333,23 @@ export default {
         // create deep copy of candidate
         this.edit = JSON.parse(JSON.stringify(this.candidate));
     },
+    validations: {
+        edit: {
+            academics: {
+                $each: {
+                    institution: {
+                        name: { required },
+                        country: { required }
+                    },
+                    course: {
+                        name: { required },
+                        level: { required }
+                    },
+                    yearObtained: { required }
+                }
+            }
+        }
+    }
 }
 </script>
 
