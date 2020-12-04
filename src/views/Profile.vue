@@ -271,15 +271,15 @@
                     :key="index"
                 >
                     <v-divider v-if="index > 0" class="my-4"></v-divider>
-                    <v-col cols="7">
+                    <v-col cols="7" class="pb-1">
                         <h3>{{ formatCompanyName(job) }}</h3>
                     </v-col>
 
-                    <v-col cols="5">
+                    <v-col cols="5" class="text-end pb-1">
                         <h3>{{ formatJobDate(job.startDate) }} - {{ formatJobDate(job.endDate) }}</h3>
                     </v-col>
 
-                    <v-col cols="12">
+                    <v-col cols="12" class="pt-0">
                         <h3>{{ job.title }} - {{ job.department.name }}</h3>
                     </v-col>
 
@@ -371,7 +371,7 @@ export default {
             if (job.city) {
                 val += ", " + job.city;
             }
-            if (job.country) {
+            if (job.country && job.city != job.country) {
                 val += ", " + job.country;
             }
             return val;

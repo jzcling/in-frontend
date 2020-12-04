@@ -173,7 +173,7 @@
                         </div>
                     </v-col>
 
-                    <v-col cols="12">
+                    <v-col cols="12" md="8">
                         <v-text-field
                             v-model="job.title"
                             label="Title"
@@ -185,7 +185,7 @@
                         ></v-text-field>
                     </v-col>
 
-                    <v-col cols="12">
+                    <v-col cols="12" md="4">
                         <v-combobox
                             v-model="job.department"
                             :items="departments"
