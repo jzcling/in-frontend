@@ -394,7 +394,7 @@ export default {
         }
     },
     created() {
-        this.edit = JSON.parse(JSON.stringify(this.edit));
+        this.edit = JSON.parse(JSON.stringify(this.candidate));
     },
     watch: {
         birthdayMenu (val) {
