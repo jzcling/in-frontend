@@ -93,6 +93,11 @@ export default {
             return response;
         },
         async save() {
+            this.$v.$touch();
+            if (this.$v.$invalid) {
+                return;
+            }
+            
             try {
                 await this.createOrUpdateProject();
             } catch (e) {
