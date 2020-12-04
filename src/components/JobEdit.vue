@@ -373,8 +373,13 @@ export default {
             }
         },
         async save() {
-            await this.updateJobs();
-            this.$emit('close')
+            try {
+                await this.updateJobs();
+            } catch (e) {
+                this.error = e;
+            } finally {
+                this.$emit('close');
+            }
         },
         addJob() {
             this.edit.jobs = this.edit.jobs || [];

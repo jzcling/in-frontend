@@ -384,8 +384,13 @@ export default {
             }
         },
         async save() {
-            await this.updateCandidate();
-            this.$emit('close');
+            try {
+                await this.updateCandidate();
+            } catch (e) {
+                this.error = e;
+            } finally {
+                this.$emit('close');
+            }
         }
     },
     created() {

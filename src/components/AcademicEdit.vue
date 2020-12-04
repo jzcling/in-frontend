@@ -263,8 +263,13 @@ export default {
             }
         },
         async save() {
-            await this.updateAcademics();
-            this.$emit('close')
+            try {
+                await this.updateAcademics();
+            } catch (e) {
+                this.error = e;
+            } finally {
+                this.$emit('close');
+            }
         },
         addAcademic() {
             this.edit.academics = this.edit.academics || [];

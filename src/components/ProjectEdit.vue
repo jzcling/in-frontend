@@ -83,8 +83,13 @@ export default {
             return response;
         },
         async save() {
-            await this.createOrUpdateProject();
-            this.$emit('close')
+            try {
+                await this.createOrUpdateProject();
+            } catch (e) {
+                this.error = e;
+            } finally {
+                this.$emit('close');
+            }
         },
     },
     created() {

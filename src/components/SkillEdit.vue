@@ -140,8 +140,13 @@ export default {
             }
         },
         async save() {
-            await this.updateUserSkills();
-            this.$emit('close')
+            try {
+                await this.updateUserSkills();
+            } catch (e) {
+                this.error = e;
+            } finally {
+                this.$emit('close');
+            }
         },
     },
     created() {
