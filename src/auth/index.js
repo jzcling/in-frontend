@@ -87,7 +87,6 @@ export const useAuth0 = ({
             },
 
             async createCandidate(user) {
-                this.loading = true;
                 try {
                     var response = await this.$axios.post(this.$apiBase + '/v1/candidates', {
                         auth_id: user.sub,
@@ -100,8 +99,6 @@ export const useAuth0 = ({
                     this.user[this.namespace] = response.id;
                 } catch (e) {
                     this.error = e;
-                } finally {
-                    this.loading = false;
                 }
             }
         },
