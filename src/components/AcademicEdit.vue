@@ -222,14 +222,14 @@ export default {
                 // if institution does not exist, create it
                 if (!existingInstitutions.includes(institution.name + ", " + institution.country)) {
                     var inResponse = await this.createInstitution(institution);
-                    institution = inResponse.data;
+                    academic.institution = inResponse.data;
                 }
 
                 var course = academic.course;
                 // if course does not exist, create it
                 if (!existingCourses.includes(course.name + ", " + course.level)) {
                     var crResponse = await this.createCourse(course);
-                    course = crResponse.data;
+                    academic.course = crResponse.data;
                 }
 
                 // create academic history if not in current history

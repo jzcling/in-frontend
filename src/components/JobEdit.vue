@@ -335,14 +335,14 @@ export default {
                 // if company does not exist, create it
                 if (!company.id && !existingCompanies.includes(company.name)) {
                     var coResponse = await this.createCompany(company);
-                    company = coResponse.data;
+                    job.company = coResponse.data;
                 }
 
                 var department = job.department;
                 // if department does not exist, create it
                 if (!department.id && !existingDepartments.includes(department.name)) {
                     var dpResponse = await this.createDepartment(department);
-                    department = dpResponse.data;
+                    job.department = dpResponse.data;
                 }
 
                 // create job history if not in current history
