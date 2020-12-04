@@ -62,6 +62,7 @@
                     max-width="1000"
                 >
                     <ProfileEdit
+                        :candidate="candidate"
                         @close="profileDialog = false; getProfile()"
                     />
                 </v-dialog>
