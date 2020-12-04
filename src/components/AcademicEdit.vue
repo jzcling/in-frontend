@@ -264,7 +264,8 @@ export default {
                 candidateId: this.candidate.id,
                 institutionId: academic.institution.id,
                 courseId: academic.course.id,
-                yearObtained: academic.yearObtained
+                yearObtained: academic.yearObtained,
+                grade: academic.grade
             }, this.axiosConfig);
         },
         async updateAcademic(academic) {
@@ -273,7 +274,8 @@ export default {
                 candidateId: this.candidate.id,
                 institutionId: academic.institution.id,
                 courseId: academic.course.id,
-                yearObtained: academic.yearObtained
+                yearObtained: academic.yearObtained,
+                grade: academic.grade
             }, this.axiosConfig);
         },
         async deleteAcademic(academic) {
