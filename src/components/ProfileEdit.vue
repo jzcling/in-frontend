@@ -36,6 +36,8 @@
                             outlined
                             dense
                             hide-details="auto"
+                            @blur="$v.edit.firstName.$touch()"
+                            :error-messages="validationErrors($v.edit.firstName, 'First Name')"
                         ></v-text-field>
                         <v-text-field
                             v-model="edit.lastName"
@@ -44,6 +46,8 @@
                             outlined
                             dense
                             hide-details="auto"
+                            @blur="$v.edit.lastName.$touch()"
+                            :error-messages="validationErrors($v.edit.lastName, 'Last Name')"
                         ></v-text-field>
                     </div>
                         
@@ -55,6 +59,8 @@
                             outlined
                             dense
                             hide-details="auto"
+                            @blur="$v.edit.email.$touch()"
+                            :error-messages="validationErrors($v.edit.email, 'Email')"
                         ></v-text-field>
                         <v-text-field
                             v-model="edit.contactNumber"
@@ -63,6 +69,8 @@
                             outlined
                             dense
                             hide-details="auto"
+                            @blur="$v.edit.contactNumber.$touch()"
+                            :error-messages="validationErrors($v.edit.contactNumber, 'Contact Number')"
                         ></v-text-field>
                         <v-text-field
                             v-model="edit.residenceCity"
@@ -71,6 +79,8 @@
                             outlined
                             dense
                             hide-details="auto"
+                            @blur="$v.edit.residenceCity.$touch()"
+                            :error-messages="validationErrors($v.edit.residenceCity, 'City')"
                         ></v-text-field>
                     </div>
                 </div>
@@ -220,12 +230,13 @@
                     <div>Education Level</div>
                 </v-col>
                 <v-col cols="6" md="4">
-                    <v-text-field
+                    <v-select
                         v-model="edit.educationLevel"
+                        :items="levels"
                         outlined
                         dense
                         hide-details="auto"
-                    ></v-text-field>
+                    ></v-select>
                 </v-col>
 
                 <v-col cols="12" md="2" :class="{ 'pb-0': $vuetify.breakpoint.smAndDown }">
@@ -338,8 +349,12 @@
 </template>
 
 <script>
+import { validationMixin } from 'vuelidate'
+import { required } from 'vuelidate/lib/validators'
+
 export default {
     name: 'ProfileEdit',
+    mixins: [validationMixin],
     props: {
         candidate: {
             required: true,
@@ -351,6 +366,8 @@ export default {
             loading: false,
             error: null,
             edit: {},
+
+            levels: ['Undergraduate', 'Master\'s', 'Doctorate', 'Diploma', 'Others'],
 
             avatarRules: [
                 value => !value || value.size < 1000000 || 'Avatar size should be less than 1 MB!',
@@ -386,6 +403,11 @@ export default {
             }
         },
         async save() {
+            this.$v.$touch();
+            if (this.$v.$invalid) {
+                return;
+            }
+            
             try {
                 await this.updateCandidate();
             } catch (e) {
@@ -393,6 +415,13 @@ export default {
             } finally {
                 this.$emit('close');
             }
+        },
+        validationErrors(test, name) {
+            const errors = [];
+            if (!test.$dirty) return errors;
+            !test.required && errors.push(name + ' is required.');
+            name == 'Contact Number' && !test.internationalNumber && errors.push(name + ' needs an international calling code, e.g. +65')
+            return errors;
         }
     },
     created() {
@@ -410,6 +439,20 @@ export default {
             }
         }
     },
+    validations: {
+        edit: {
+            firstName: { required },
+            lastName: { required },
+            email: { required },
+            contactNumber: { 
+                required,
+                internationalNumber(contactNumber) {
+                    return /^\+[0-9]*$/.test(contactNumber);
+                }
+            },
+            residenceCity: { required }
+        }
+    }
 }
 </script>
 

@@ -13,6 +13,8 @@
                         outlined
                         dense
                         hide-details="auto"
+                        @blur="$v.edit.name.$touch()"
+                        :error-messages="validationErrors($v.edit.name, 'Name')"
                     ></v-text-field>
                 </v-col>
                 <v-col cols="12">
@@ -22,6 +24,8 @@
                         outlined
                         dense
                         hide-details="auto"
+                        @blur="$v.edit.repoUrl.$touch()"
+                        :error-messages="validationErrors($v.edit.repoUrl, 'Repository URL')"
                     ></v-text-field>
                 </v-col>
             </v-row>
@@ -43,8 +47,12 @@
 </template>
 
 <script>
+import { validationMixin } from 'vuelidate'
+import { required } from 'vuelidate/lib/validators'
+
 export default {
     name: 'ProjectEdit',
+    mixins: [validationMixin],
     props: {
         project: {
             type: Object
@@ -93,11 +101,23 @@ export default {
                 this.$emit('close');
             }
         },
+        validationErrors(test, name) {
+            const errors = [];
+            if (!test.$dirty) return errors;
+            !test.required && errors.push(name + ' is required.');
+            return errors;
+        }
     },
     created() {
         if (this.project) {
-            this.edit = this.project;
+            this.edit = JSON.parse(JSON.stringify(this.project));
             this.method = 'put';
+        }
+    },
+    validations: {
+        edit: {
+            name: { required },
+            repoUrl: { required }
         }
     }
 }

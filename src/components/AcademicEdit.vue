@@ -22,7 +22,7 @@
                 <v-row
                     :key="index"
                 >
-                    <v-col cols="9">
+                    <v-col cols="9" v-if="$vuetify.breakpoint.mdAndUp">
                         <v-row no-gutters>
                             <v-col cols="9">
                                 <v-combobox
@@ -52,7 +52,35 @@
                         </v-row>
                     </v-col>
 
-                    <v-col cols="3">
+                    <template v-else>
+                        <v-col cols="12">
+                            <v-combobox
+                                v-model="academic.institution"
+                                :items="institutions"
+                                item-text="name"
+                                label="Institution"
+                                outlined
+                                dense
+                                hide-details="auto"
+                                @blur="handleInstitution(academic); $v.edit.academics.$each[index].institution.name.$touch()"
+                                :error-messages="validationErrors($v.edit.academics.$each[index].institution.name, 'Institution')"
+                            ></v-combobox>
+                        </v-col>
+
+                        <v-col cols="12">
+                            <v-text-field
+                                v-model="academic.institution.country"
+                                label="Country"
+                                outlined
+                                dense
+                                hide-details="auto"
+                                @blur="$v.edit.academics.$each[index].institution.country.$touch()"
+                                :error-messages="validationErrors($v.edit.academics.$each[index].institution.country, 'Country')"
+                            ></v-text-field>
+                        </v-col>
+                    </template>
+
+                    <v-col cols="12" md="3">
                         <v-text-field
                             class="right-input"
                             v-model="academic.yearObtained"
@@ -65,7 +93,7 @@
                         ></v-text-field>
                     </v-col>
 
-                    <v-col cols="9">
+                    <v-col cols="12" md="9">
                         <v-combobox
                             v-model="academic.course"
                             :items="courses"
@@ -79,7 +107,7 @@
                         ></v-combobox>
                     </v-col>
 
-                    <v-col cols="3">
+                    <v-col cols="12" md="3">
                         <v-select
                             v-model="academic.course.level"
                             label="Level"
@@ -199,20 +227,24 @@ export default {
 
                 var course = academic.course;
                 // if course does not exist, create it
-                if (!course.id && !existingCourses.includes(course.name + ", " + course.level)) {
+                if (!existingCourses.includes(course.name + ", " + course.level)) {
                     var crResponse = await this.createCourse(course);
                     course = crResponse.data;
                 }
 
                 // create academic history if not in current history
-                if (!this.candidate.academics.includes(academic)) {
+                if (!academic.id) {
                     await this.createAcademic(academic);
+                } else {
+                    await this.updateAcademic(academic);
                 }
             });
 
             // delete all academic histories that have been removed
+            var updatedAcademics = this.edit.academics.map(academic => academic.id);
+            console.log(updatedAcademics);
             this.candidate.academics.forEach(async academic => {
-                if (!this.edit.academics.includes(academic)) {
+                if (!updatedAcademics.includes(academic.id)) {
                     await this.deleteAcademic(academic);
                 }
             });
@@ -225,10 +257,24 @@ export default {
                 yearObtained: academic.yearObtained
             }, this.axiosConfig);
         },
+        async updateAcademic(academic) {
+            return this.$axios.put(this.$apiBase + '/v1/academichistories/' + academic.id, {
+                id: academic.id,
+                candidateId: this.candidate.id,
+                institutionId: academic.institution.id,
+                courseId: academic.course.id,
+                yearObtained: academic.yearObtained
+            }, this.axiosConfig);
+        },
         async deleteAcademic(academic) {
             return this.$axios.delete(this.$apiBase + '/v1/academichistories/' + academic.id, this.axiosConfig);
         },
         async save() {
+            this.$v.$touch();
+            if (this.$v.$invalid) {
+                return;
+            }
+            
             try {
                 await this.updateAcademics();
             } catch (e) {
@@ -276,6 +322,7 @@ export default {
         },
         validationErrors(test, name) {
             const errors = [];
+            if (!test.$dirty) return errors;
             !test.required && errors.push(name + ' is required.');
             return errors;
         }

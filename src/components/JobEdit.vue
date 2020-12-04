@@ -22,7 +22,7 @@
                 <v-row
                     :key="index"
                 >
-                    <v-col cols="7">
+                    <v-col cols="7" v-if="$vuetify.breakpoint.mdAndUp">
                         <v-row no-gutters>
                             <v-col cols="6">
                                 <v-combobox
@@ -33,6 +33,8 @@
                                     outlined
                                     dense
                                     hide-details="auto"
+                                    @blur="$v.edit.jobs.$each[index].company.name.$touch()"
+                                    :error-messages="validationErrors($v.edit.jobs.$each[index].company.name, 'Company')"
                                 ></v-combobox>
                             </v-col>
 
@@ -43,6 +45,8 @@
                                     outlined
                                     dense
                                     hide-details="auto"
+                                    @blur="$v.edit.jobs.$each[index].city.$touch()"
+                                    :error-messages="validationErrors($v.edit.jobs.$each[index].city, 'City')"
                                 ></v-text-field>
                             </v-col>
 
@@ -53,12 +57,54 @@
                                     outlined
                                     dense
                                     hide-details="auto"
+                                    @blur="$v.edit.jobs.$each[index].country.$touch()"
+                                    :error-messages="validationErrors($v.edit.jobs.$each[index].country, 'Country')"
                                 ></v-text-field>
                             </v-col>
                         </v-row>
                     </v-col>
 
-                    <v-col cols="5">
+                    <template v-else>
+                        <v-col cols="12">
+                            <v-combobox
+                                v-model="job.company"
+                                :items="companies"
+                                item-text="name"
+                                label="Company"
+                                outlined
+                                dense
+                                hide-details="auto"
+                                @blur="$v.edit.jobs.$each[index].company.name.$touch()"
+                                :error-messages="validationErrors($v.edit.jobs.$each[index].company.name, 'Company')"
+                            ></v-combobox>
+                        </v-col>
+
+                        <v-col cols="12">
+                            <v-text-field
+                                v-model="job.city"
+                                label="City"
+                                outlined
+                                dense
+                                hide-details="auto"
+                                @blur="$v.edit.jobs.$each[index].city.$touch()"
+                                :error-messages="validationErrors($v.edit.jobs.$each[index].city, 'City')"
+                            ></v-text-field>
+                        </v-col>
+
+                        <v-col cols="12">
+                            <v-text-field
+                                v-model="job.country"
+                                label="Country"
+                                outlined
+                                dense
+                                hide-details="auto"
+                                @blur="$v.edit.jobs.$each[index].country.$touch()"
+                                :error-messages="validationErrors($v.edit.jobs.$each[index].country, 'Country')"
+                            ></v-text-field>
+                        </v-col>
+                    </template>
+
+                    <v-col cols="12" md="5">
                         <div class="d-flex">
                             <v-menu
                                 v-model="startDateMenu[index]"
@@ -80,6 +126,8 @@
                                         dense
                                         hide-details="auto"
                                         clearable
+                                        @blur="$v.edit.jobs.$each[index].startDate.$touch()"
+                                        :error-messages="validationErrors($v.edit.jobs.$each[index].startDate, 'Start Date')"
                                     ></v-text-field>
                                 </template>
                                 <v-date-picker
@@ -132,10 +180,13 @@
                             outlined
                             dense
                             hide-details="auto"
+                            @blur="$v.edit.jobs.$each[index].title.$touch()"
+                            :error-messages="validationErrors($v.edit.jobs.$each[index].title, 'Title')"
                         ></v-text-field>
+                    </v-col>
 
+                    <v-col cols="12">
                         <v-combobox
-                            class="mt-2"
                             v-model="job.department"
                             :items="departments"
                             item-text="name"
@@ -143,6 +194,8 @@
                             outlined
                             dense
                             hide-details="auto"
+                            @blur="$v.edit.jobs.$each[index].department.name.$touch()"
+                            :error-messages="validationErrors($v.edit.jobs.$each[index].department, 'Department')"
                         ></v-combobox>
                     </v-col>
 
@@ -196,8 +249,12 @@
 </template>
 
 <script>
+import { validationMixin } from 'vuelidate'
+import { required } from 'vuelidate/lib/validators'
+
 export default {
     name: 'jobEdit',
+    mixins: [validationMixin],
     props: {
         candidate: {
             required: true,
@@ -289,14 +346,18 @@ export default {
                 }
 
                 // create job history if not in current history
-                if (!this.candidate.jobs.includes(job)) {
+                if (!job.id) {
                     await this.createJob(job);
+                } else {
+                    await this.updateJob(job);
                 }
             });
 
             // delete all job histories that have been removed
+            var updatedJobs = this.edit.jobs.map(job => job.id);
             this.candidate.jobs.forEach(async job => {
-                if (!this.edit.jobs.includes(job)) {
+                console.log(updatedJobs.includes(job.id));
+                if (!updatedJobs.includes(job.id)) {
                     await this.deleteJob(job);
                 }
             });
@@ -320,10 +381,35 @@ export default {
                 description: job.description
             }, this.axiosConfig);
         },
+        async updateJob(job) {
+            if (job.description) {
+                job.description = job.description.replace(/\n\r?/g, '<br />\n');
+            }
+
+            return this.$axios.put(this.$apiBase + '/v1/jobhistories/' + job.id, {
+                id: job.id,
+                candidateId: this.candidate.id,
+                companyId: job.company.id,
+                departmentId: job.department.id,
+                country: job.country,
+                city: job.city,
+                title: job.title,
+                startDate: job.startDate,
+                endDate: job.endDate,
+                salaryCurrency: job.salaryCurrency,
+                salary: job.salary,
+                description: job.description
+            }, this.axiosConfig);
+        },
         async deleteJob(job) {
             return this.$axios.delete(this.$apiBase + '/v1/jobhistories/' + job.id, this.axiosConfig);
         },
         async save() {
+            this.$v.$touch();
+            if (this.$v.$invalid) {
+                return;
+            }
+
             try {
                 await this.updateJobs();
             } catch (e) {
@@ -337,6 +423,12 @@ export default {
             this.edit.jobs.push({
                 candidateId: this.candidate.id
             });
+        },
+        validationErrors(test, name) {
+            const errors = [];
+            if (!test.$dirty) return errors;
+            !test.required && errors.push(name + ' is required.');
+            return errors;
         }
     },
     created() {
@@ -395,6 +487,24 @@ export default {
                 }
             },
             deep: true
+        }
+    },
+    validations: {
+        edit: {
+            jobs: {
+                $each: {
+                    company: {
+                        name: { required }
+                    },
+                    department: {
+                        name: { required }
+                    },
+                    city: { required },
+                    country: { required },
+                    title: { required },
+                    startDate: { required }
+                }
+            }
         }
     }
 }

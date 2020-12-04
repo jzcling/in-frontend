@@ -222,6 +222,7 @@
                     v-for="(academic, index) in candidate.academics"
                     :key="index"
                 >
+                    <v-divider v-if="index > 0" class="my-4"></v-divider>
                     <div class="d-flex justify-space-between">
                         <h3>{{ academic.institution.name }}, {{ academic.institution.country }}</h3>
                         <h3>{{ academic.yearObtained }}</h3>
@@ -269,6 +270,7 @@
                     v-for="(job, index) in candidate.jobs"
                     :key="index"
                 >
+                    <v-divider v-if="index > 0" class="my-4"></v-divider>
                     <v-col cols="7">
                         <h3>{{ formatCompanyName(job) }}</h3>
                     </v-col>
@@ -281,7 +283,7 @@
                         <h3>{{ job.title }} - {{ job.department.name }}</h3>
                     </v-col>
 
-                    <v-col cols="12">
+                    <v-col cols="12" v-if="job.salary > 0">
                         <h3>{{ job.salaryCurrency }} {{ job.salary }}</h3>
                     </v-col>
 
