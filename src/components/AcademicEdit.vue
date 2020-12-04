@@ -137,7 +137,13 @@ export default {
             institutions: [],
             courses: [],
 
-            levels: ['Undergraduate', 'Master\'s', 'Doctorate', 'Diploma', 'Others']
+            levels: ['Undergraduate', 'Master\'s', 'Doctorate', 'Diploma', 'Others'],
+
+            axiosConfig: {
+                headers: {
+                    Authorization: 'Bearer ' + this.$auth.token
+                }
+            }
         }
     },
     methods: {
@@ -148,11 +154,7 @@ export default {
         async getInstitutions() {
             this.loading = true;
             try {
-                var response = await this.$axios.get(this.$apiBase + '/v1/institutions', {
-                    headers: {
-                        Authorization: 'Bearer ' + this.$auth.token
-                    }
-                });
+                var response = await this.$axios.get(this.$apiBase + '/v1/institutions', this.axiosConfig);
                 this.institutions = response.data.institutions;
             } catch (e) {
                 this.error = e;
@@ -163,11 +165,7 @@ export default {
         async getCourses() {
             this.loading = true;
             try {
-                var response = await this.$axios.get(this.$apiBase + '/v1/courses', {
-                    headers: {
-                        Authorization: 'Bearer ' + this.$auth.token
-                    }
-                });
+                var response = await this.$axios.get(this.$apiBase + '/v1/courses', this.axiosConfig);
                 this.courses = response.data.courses;
             } catch (e) {
                 this.error = e;
@@ -176,40 +174,16 @@ export default {
             }
         },
         async createInstitution(institution) {
-            this.loading = true;
-            try {
-                var response = await this.$axios.post(this.$apiBase + '/v1/institutions', {
+            return this.$axios.post(this.$apiBase + '/v1/institutions', {
                     name: institution.name,
                     country: institution.country
-                }, {
-                    headers: {
-                        Authorization: 'Bearer ' + this.$auth.token
-                    }
-                });
-            } catch (e) {
-                this.error = e;
-            } finally {
-                this.loading = false;
-            }
-            return response;
+            }, this.axiosConfig);
         },
         async createCourse(course) {
-            this.loading = true;
-            try {
-                var response = await this.$axios.post(this.$apiBase + '/v1/courses', {
-                    level: course.level,
-                    name: course.name
-                }, {
-                    headers: {
-                        Authorization: 'Bearer ' + this.$auth.token
-                    }
-                });
-            } catch (e) {
-                this.error = e;
-            } finally {
-                this.loading = false;
-            }
-            return response;
+            return this.$axios.post(this.$apiBase + '/v1/courses', {
+                level: course.level,
+                name: course.name
+            }, this.axiosConfig);
         },
         async updateAcademics() {
             var existingInstitutions = this.institutions.map(institution => institution.name + ", " + institution.country);
@@ -232,49 +206,27 @@ export default {
 
                 // create academic history if not in current history
                 if (!this.candidate.academics.includes(academic)) {
-                    this.createAcademic(academic);
+                    await this.createAcademic(academic);
                 }
             });
 
             // delete all academic histories that have been removed
-            this.candidate.academics.forEach(academic => {
+            this.candidate.academics.forEach(async academic => {
                 if (!this.edit.academics.includes(academic)) {
-                    this.deleteAcademic(academic);
+                    await this.deleteAcademic(academic);
                 }
             });
         },
         async createAcademic(academic) {
-            this.loading = true;
-            try {
-                await this.$axios.post(this.$apiBase + '/v1/academichistories', {
-                    candidateId: this.candidate.id,
-                    institutionId: academic.institution.id,
-                    courseId: academic.course.id,
-                    yearObtained: academic.yearObtained
-                }, {
-                    headers: {
-                        Authorization: 'Bearer ' + this.$auth.token
-                    }
-                });
-            } catch (e) {
-                this.error = e;
-            } finally {
-                this.loading = false;
-            }
+            return this.$axios.post(this.$apiBase + '/v1/academichistories', {
+                candidateId: this.candidate.id,
+                institutionId: academic.institution.id,
+                courseId: academic.course.id,
+                yearObtained: academic.yearObtained
+            }, this.axiosConfig);
         },
         async deleteAcademic(academic) {
-            this.loading = true;
-            try {
-                await this.$axios.delete(this.$apiBase + '/v1/academichistories/' + academic.id, {
-                    headers: {
-                        Authorization: 'Bearer ' + this.$auth.token
-                    }
-                });
-            } catch (e) {
-                this.error = e;
-            } finally {
-                this.loading = false;
-            }
+            return this.$axios.delete(this.$apiBase + '/v1/academichistories/' + academic.id, this.axiosConfig);
         },
         async save() {
             try {
@@ -324,8 +276,8 @@ export default {
         },
         validationErrors(test, name) {
             const errors = [];
-            !test.required && errors.push(name + ' is required.')
-            return errors
+            !test.required && errors.push(name + ' is required.');
+            return errors;
         }
     },
     created() {

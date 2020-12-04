@@ -358,6 +358,12 @@ export default {
 
             birthday: null,
             birthdayMenu: false,
+
+            axiosConfig: {
+                headers: {
+                    Authorization: 'Bearer ' + this.$auth.token
+                }
+            }
         }
     },
     computed: {
@@ -372,11 +378,7 @@ export default {
         async updateCandidate() {
             this.loading = true;
             try {
-                await this.$axios.put(this.$apiBase + '/v1/candidates/' + this.edit.id, this.edit, {
-                    headers: {
-                        Authorization: 'Bearer ' + this.$auth.token
-                    }
-                });
+                await this.$axios.put(this.$apiBase + '/v1/candidates/' + this.edit.id, this.edit, this.axiosConfig);
             } catch (e) {
                 this.error = e;
             } finally {

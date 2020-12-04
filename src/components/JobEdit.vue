@@ -224,6 +224,12 @@ export default {
             endDate: {},
             startDateMenu: {},
             endDateMenu: {},
+
+            axiosConfig: {
+                headers: {
+                    Authorization: 'Bearer ' + this.$auth.token
+                }
+            }
         }
     },
     methods: {
@@ -234,11 +240,7 @@ export default {
         async getCompanies() {
             this.loading = true;
             try {
-                var response = await this.$axios.get(this.$apiBase + '/v1/companies', {
-                    headers: {
-                        Authorization: 'Bearer ' + this.$auth.token
-                    }
-                });
+                var response = await this.$axios.get(this.$apiBase + '/v1/companies', this.axiosConfig);
                 this.companies = response.data.companies;
             } catch (e) {
                 this.error = e;
@@ -249,11 +251,7 @@ export default {
         async getDepartments() {
             this.loading = true;
             try {
-                var response = await this.$axios.get(this.$apiBase + '/v1/departments', {
-                    headers: {
-                        Authorization: 'Bearer ' + this.$auth.token
-                    }
-                });
+                var response = await this.$axios.get(this.$apiBase + '/v1/departments', this.axiosConfig);
                 this.departments = response.data.departments;
             } catch (e) {
                 this.error = e;
@@ -262,38 +260,14 @@ export default {
             }
         },
         async createCompany(company) {
-            this.loading = true;
-            try {
-                var response = await this.$axios.post(this.$apiBase + '/v1/companies', {
-                    name: company
-                }, {
-                    headers: {
-                        Authorization: 'Bearer ' + this.$auth.token
-                    }
-                });
-            } catch (e) {
-                this.error = e;
-            } finally {
-                this.loading = false;
-            }
-            return response;
+            return await this.$axios.post(this.$apiBase + '/v1/companies', {
+                name: company 
+            }, this.axiosConfig);
         },
         async createDepartment(department) {
-            this.loading = true;
-            try {
-                var response = await this.$axios.post(this.$apiBase + '/v1/departments', {
-                    name: department
-                }, {
-                    headers: {
-                        Authorization: 'Bearer ' + this.$auth.token
-                    }
-                });
-            } catch (e) {
-                this.error = e;
-            } finally {
-                this.loading = false;
-            }
-            return response;
+            return await this.$axios.post(this.$apiBase + '/v1/departments', {
+                name: department
+            }, this.axiosConfig);
         },
         async updateJobs() {
             var existingCompanies = this.companies.map(company => company.name);
@@ -316,61 +290,38 @@ export default {
 
                 // create job history if not in current history
                 if (!this.candidate.jobs.includes(job)) {
-                    this.createJob(job);
+                    await this.createJob(job);
                 }
             });
 
             // delete all job histories that have been removed
-            this.candidate.jobs.forEach(job => {
+            this.candidate.jobs.forEach(async job => {
                 if (!this.edit.jobs.includes(job)) {
-                    this.deleteJob(job);
+                    await this.deleteJob(job);
                 }
             });
         },
         async createJob(job) {
-            this.loading = true;
-
             if (job.description) {
                 job.description = job.description.replace(/\n\r?/g, '<br />\n');
             }
 
-            try {
-                await this.$axios.post(this.$apiBase + '/v1/jobhistories', {
-                    candidateId: this.candidate.id,
-                    companyId: job.company.id,
-                    departmentId: job.department.id,
-                    country: job.country,
-                    city: job.city,
-                    title: job.title,
-                    startDate: job.startDate,
-                    endDate: job.endDate,
-                    salaryCurrency: job.salaryCurrency,
-                    salary: job.salary,
-                    description: job.description
-                }, {
-                    headers: {
-                        Authorization: 'Bearer ' + this.$auth.token
-                    }
-                });
-            } catch (e) {
-                this.error = e;
-            } finally {
-                this.loading = false;
-            }
+            return this.$axios.post(this.$apiBase + '/v1/jobhistories', {
+                candidateId: this.candidate.id,
+                companyId: job.company.id,
+                departmentId: job.department.id,
+                country: job.country,
+                city: job.city,
+                title: job.title,
+                startDate: job.startDate,
+                endDate: job.endDate,
+                salaryCurrency: job.salaryCurrency,
+                salary: job.salary,
+                description: job.description
+            }, this.axiosConfig);
         },
         async deleteJob(job) {
-            this.loading = true;
-            try {
-                await this.$axios.delete(this.$apiBase + '/v1/jobhistories/' + job.id, {
-                    headers: {
-                        Authorization: 'Bearer ' + this.$auth.token
-                    }
-                });
-            } catch (e) {
-                this.error = e;
-            } finally {
-                this.loading = false;
-            }
+            return this.$axios.delete(this.$apiBase + '/v1/jobhistories/' + job.id, this.axiosConfig);
         },
         async save() {
             try {

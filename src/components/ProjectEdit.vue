@@ -55,7 +55,13 @@ export default {
             loading: false,
             error: null,
             edit: {},
-            method: 'post'
+            method: 'post',
+
+            axiosConfig: {
+                headers: {
+                    Authorization: 'Bearer ' + this.$auth.token
+                }
+            }
         }
     },
     methods: {
@@ -67,11 +73,7 @@ export default {
                     response = await this.$axios.post(this.$apiBase + '/v1/projects', {
                         project: this.edit,
                         candidateId: this.$auth.userId
-                    }, {
-                        headers: {
-                            Authorization: 'Bearer ' + this.$auth.token
-                        }
-                    });
+                    }, this.axiosConfig);
                 } else {
                     response = await this.$axios.put(this.$apiBase + '/v1/projects/' + this.edit.id, this.edit);
                 }
