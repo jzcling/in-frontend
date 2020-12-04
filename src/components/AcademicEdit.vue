@@ -93,7 +93,7 @@
                         ></v-text-field>
                     </v-col>
 
-                    <v-col cols="12" md="9">
+                    <v-col cols="12" md="6">
                         <v-combobox
                             v-model="academic.course"
                             :items="courses"
@@ -105,6 +105,16 @@
                             @blur="handleCourse(academic); $v.edit.academics.$each[index].course.name.$touch()"
                             :error-messages="validationErrors($v.edit.academics.$each[index].course.name, 'Course')"
                         ></v-combobox>
+                    </v-col>
+
+                    <v-col cols="12" md="3">
+                        <v-text-field
+                            v-model="academic.grade"
+                            label="Grade"
+                            outlined
+                            dense
+                            hide-details="auto"
+                        ></v-text-field>
                     </v-col>
 
                     <v-col cols="12" md="3">

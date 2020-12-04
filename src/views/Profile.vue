@@ -229,7 +229,7 @@
                     </div>
 
                     <div class="d-flex justify-space-between">
-                        <h3>{{ academic.course.name }}</h3>
+                        <h3>{{ formatCourseName(academic.course) }}</h3>
                         <v-spacer></v-spacer>
                         <h3>{{ academic.course.level }}</h3>
                     </div>
@@ -366,6 +366,13 @@ export default {
             window.open(url, "_blank");
         },
 
+        formatCourseName(course) {
+            var val = course.name;
+            if (course.grade) {
+                val += ", " + course.grade;
+            }
+            return val;
+        },
         formatCompanyName(job) {
             var val = job.company.name;
             if (job.city) {
