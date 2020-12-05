@@ -1,298 +1,307 @@
 <template>
     <v-container fluid class="profile">
-        <v-card>
-            <div class="d-flex flex-no-wrap align-content-center pa-4">
-                <v-avatar size="125">
-                    <v-img :src="candidate.picture" alt="Profile Picture" />
-                </v-avatar>
+        <template v-if="!loading">
+            <template v-if="candidate">
+                <v-card>
+                    <div class="d-flex flex-no-wrap align-content-center pa-4">
+                        <v-avatar size="125">
+                            <v-img :src="candidate.picture" alt="Profile Picture" />
+                        </v-avatar>
 
-                <div class="grow">
-                    <v-card-title
-                        class="headline"
-                        v-text="name"
-                    />
-                        
-                    <v-card-subtitle>
-                        <div>{{ candidate.email}}</div>
-                        <div>{{ candidate.contactNumber }}</div>
-                        <div>{{ candidate.residenceCity }}</div>
-                    </v-card-subtitle>
-                </div>
+                        <div class="grow">
+                            <v-card-title
+                                class="headline"
+                                v-text="name"
+                            />
+                                
+                            <v-card-subtitle>
+                                <div>{{ candidate.email}}</div>
+                                <div>{{ candidate.contactNumber }}</div>
+                                <div>{{ candidate.residenceCity }}</div>
+                            </v-card-subtitle>
+                        </div>
 
-                <div 
-                    v-if="$vuetify.breakpoint.mdAndUp"
-                    class="d-flex flex-column justify-space-around mr-4"
-                >
-                    <h3 
-                        class="d-flex align-content-center cursor-pointer" 
-                        @click="open(candidate.scmUrl)"
-                    >
-                        <v-icon class="mr-2">mdi-github</v-icon>
-                        Github
-                    </h3>
-                    <h3 
-                        class="d-flex align-content-center cursor-pointer"
-                        @click="open(candidate.linkedInUrl)"
-                    >
-                        <v-icon class="mr-2">mdi-linkedin</v-icon>
-                        LinkedIn
-                    </h3>
-                    <h3 
-                        class="d-flex align-content-center cursor-pointer"
-                        @click="open(candidate.websiteUrl)"
-                    >
-                        <v-icon class="mr-2">mdi-web</v-icon>
-                        Personal Website
-                    </h3>
-                </div>
+                        <div 
+                            v-if="$vuetify.breakpoint.mdAndUp"
+                            class="d-flex flex-column justify-space-around mr-4"
+                        >
+                            <h3 
+                                class="d-flex align-content-center cursor-pointer" 
+                                @click="open(candidate.scmUrl)"
+                            >
+                                <v-icon class="mr-2">mdi-github</v-icon>
+                                Github
+                            </h3>
+                            <h3 
+                                class="d-flex align-content-center cursor-pointer"
+                                @click="open(candidate.linkedInUrl)"
+                            >
+                                <v-icon class="mr-2">mdi-linkedin</v-icon>
+                                LinkedIn
+                            </h3>
+                            <h3 
+                                class="d-flex align-content-center cursor-pointer"
+                                @click="open(candidate.websiteUrl)"
+                            >
+                                <v-icon class="mr-2">mdi-web</v-icon>
+                                Personal Website
+                            </h3>
+                        </div>
 
-                <v-btn
-                    color="teal"
-                    dark
-                    outlined
-                    v-bind="size"
-                    @click.stop="profileDialog = true"
-                >
-                    <v-icon v-bind="size">mdi-pencil</v-icon>
-                </v-btn>
+                        <v-btn
+                            color="teal"
+                            dark
+                            outlined
+                            v-bind="size"
+                            @click.stop="profileDialog = true"
+                        >
+                            <v-icon v-bind="size">mdi-pencil</v-icon>
+                        </v-btn>
 
-                <v-dialog
-                    v-model="profileDialog"
-                    scrollable
-                    max-width="1000"
-                >
-                    <ProfileEdit
-                        :candidate="candidate"
-                        @close="profileDialog = false; getProfile()"
-                    />
-                </v-dialog>
-            </div>
-
-            <div 
-                v-if="$vuetify.breakpoint.smAndDown"
-                class="d-flex flex-column justify-space-around mx-4"
-            >
-                <h3 
-                    class="d-flex align-content-center cursor-pointer" 
-                    @click="open(candidate.scmUrl)"
-                >
-                    <v-icon class="mr-2">mdi-github</v-icon>
-                    Github
-                </h3>
-                <h3 
-                    class="d-flex align-content-center cursor-pointer"
-                    @click="open(candidate.linkedInUrl)"
-                >
-                    <v-icon class="mr-2">mdi-linkedin</v-icon>
-                    LinkedIn
-                </h3>
-                <h3 
-                    class="d-flex align-content-center cursor-pointer"
-                    @click="open(candidate.websiteUrl)"
-                >
-                    <v-icon class="mr-2">mdi-web</v-icon>
-                    Personal Website
-                </h3>
-            </div>
-            
-            <v-card-text>
-                <v-row>
-                    <v-col cols="12" class="pb-0">
-                        <h4>Professional Summary</h4>
-                    </v-col>
-                    <v-col cols="12">
-                        <div>{{ candidate.summary }}</div>
-                    </v-col>
-
-                    <v-col cols="6" md="3">
-                        <div>Education Level</div>
-                    </v-col>
-                    <v-col cols="6" md="3">
-                        <div>{{ candidate.educationLevel }}</div>
-                    </v-col>
-
-                    <v-col cols="6" md="3">
-                        <div>Expected Salary</div>
-                    </v-col>
-                    <v-col cols="6" md="3">
-                        <div>{{ expSalary }}</div>
-                    </v-col>
-
-                    <v-col cols="6" md="3">
-                        <div>Gender</div>
-                    </v-col>
-                    <v-col cols="6" md="3">
-                        <div>{{ candidate.gender }}</div>
-                    </v-col>
-
-                    <v-col cols="6" md="3">
-                        <div>Nationality</div>
-                    </v-col>
-                    <v-col cols="6" md="3">
-                        <div>{{ candidate.nationality }}</div>
-                    </v-col>
-
-                    <v-col cols="6" md="3">
-                        <div>Birthday</div>
-                    </v-col>
-                    <v-col cols="6" md="3">
-                        <div>{{ birthday }}</div>
-                    </v-col>
-
-                    <v-col cols="6" md="3">
-                        <div>Notice Period (months)</div>
-                    </v-col>
-                    <v-col cols="6" md="3">
-                        <div>{{ candidate.noticePeriod }}</div>
-                    </v-col>
-                </v-row>
-            </v-card-text>
-        </v-card>
-
-        <v-card class="mt-4">
-            <v-card-title>
-                <div>Skills</div>
-
-                <v-spacer></v-spacer>
-
-                <v-btn
-                    color="teal"
-                    dark
-                    outlined
-                    v-bind="size"
-                    @click="skillDialog = true"
-                >
-                    <v-icon v-bind="size">mdi-pencil</v-icon>
-                </v-btn>
-
-                <v-dialog
-                    v-model="skillDialog"
-                    max-width="1000"
-                >
-                    <SkillEdit
-                        :candidate="candidate"
-                        @close="skillDialog = false; getProfile()"
-                    />
-                </v-dialog>
-            </v-card-title>
-
-            <v-card-text>
-                <v-chip
-                    class="mx-2 pa-4"
-                    color="indigo"
-                    dark
-                    v-for="(skill, index) in candidate.skills"
-                    :key="index"
-                >
-                    {{ skill.name }}
-                </v-chip>
-            </v-card-text>
-        </v-card>
-
-        <v-card class="mt-4">
-            <v-card-title>
-                <div>Academic History</div>
-
-                <v-spacer></v-spacer>
-
-                <v-btn
-                    color="teal"
-                    dark
-                    outlined
-                    v-bind="size"
-                    @click="academicDialog = true"
-                >
-                    <v-icon v-bind="size">mdi-pencil</v-icon>
-                </v-btn>
-
-                <v-dialog
-                    v-model="academicDialog"
-                    scrollable
-                    max-width="1000"
-                >
-                    <AcademicEdit
-                        :candidate="candidate"
-                        @close="academicDialog = false; getProfile()"
-                    />
-                </v-dialog>
-            </v-card-title>
-
-            <v-card-text>
-                <div
-                    v-for="(academic, index) in candidate.academics"
-                    :key="index"
-                >
-                    <v-divider v-if="index > 0" class="my-4"></v-divider>
-                    <div class="d-flex justify-space-between">
-                        <h3>{{ academic.institution.name }}, {{ academic.institution.country }}</h3>
-                        <h3>{{ academic.yearObtained }}</h3>
+                        <v-dialog
+                            v-model="profileDialog"
+                            scrollable
+                            max-width="1000"
+                        >
+                            <ProfileEdit
+                                :candidate="candidate"
+                                @close="profileDialog = false; getProfile()"
+                            />
+                        </v-dialog>
                     </div>
 
-                    <div class="d-flex justify-space-between">
-                        <h3>{{ formatCourseName(academic.course) }}</h3>
+                    <div 
+                        v-if="$vuetify.breakpoint.smAndDown"
+                        class="d-flex flex-column justify-space-around mx-4"
+                    >
+                        <h3 
+                            class="d-flex align-content-center cursor-pointer" 
+                            @click="open(candidate.scmUrl)"
+                        >
+                            <v-icon class="mr-2">mdi-github</v-icon>
+                            Github
+                        </h3>
+                        <h3 
+                            class="d-flex align-content-center cursor-pointer"
+                            @click="open(candidate.linkedInUrl)"
+                        >
+                            <v-icon class="mr-2">mdi-linkedin</v-icon>
+                            LinkedIn
+                        </h3>
+                        <h3 
+                            class="d-flex align-content-center cursor-pointer"
+                            @click="open(candidate.websiteUrl)"
+                        >
+                            <v-icon class="mr-2">mdi-web</v-icon>
+                            Personal Website
+                        </h3>
+                    </div>
+                    
+                    <v-card-text>
+                        <v-row>
+                            <v-col cols="12" class="pb-0">
+                                <h4>Professional Summary</h4>
+                            </v-col>
+                            <v-col cols="12">
+                                <div>{{ candidate.summary }}</div>
+                            </v-col>
+
+                            <v-col cols="6" md="3">
+                                <div>Education Level</div>
+                            </v-col>
+                            <v-col cols="6" md="3">
+                                <div>{{ candidate.educationLevel }}</div>
+                            </v-col>
+
+                            <v-col cols="6" md="3">
+                                <div>Expected Salary</div>
+                            </v-col>
+                            <v-col cols="6" md="3">
+                                <div>{{ expSalary }}</div>
+                            </v-col>
+
+                            <v-col cols="6" md="3">
+                                <div>Gender</div>
+                            </v-col>
+                            <v-col cols="6" md="3">
+                                <div>{{ candidate.gender }}</div>
+                            </v-col>
+
+                            <v-col cols="6" md="3">
+                                <div>Nationality</div>
+                            </v-col>
+                            <v-col cols="6" md="3">
+                                <div>{{ candidate.nationality }}</div>
+                            </v-col>
+
+                            <v-col cols="6" md="3">
+                                <div>Birthday</div>
+                            </v-col>
+                            <v-col cols="6" md="3">
+                                <div>{{ birthday }}</div>
+                            </v-col>
+
+                            <v-col cols="6" md="3">
+                                <div>Notice Period (months)</div>
+                            </v-col>
+                            <v-col cols="6" md="3">
+                                <div>{{ candidate.noticePeriod }}</div>
+                            </v-col>
+                        </v-row>
+                    </v-card-text>
+                </v-card>
+
+                <v-card class="mt-4">
+                    <v-card-title>
+                        <div>Skills</div>
+
                         <v-spacer></v-spacer>
-                        <h3>{{ academic.course.level }}</h3>
-                    </div>
-                </div>
-            </v-card-text>
-        </v-card>
 
-        <v-card class="mt-4">
-            <v-card-title>
-                <div>Work Experience</div>
+                        <v-btn
+                            color="teal"
+                            dark
+                            outlined
+                            v-bind="size"
+                            @click="skillDialog = true"
+                        >
+                            <v-icon v-bind="size">mdi-pencil</v-icon>
+                        </v-btn>
 
-                <v-spacer></v-spacer>
+                        <v-dialog
+                            v-model="skillDialog"
+                            max-width="1000"
+                        >
+                            <SkillEdit
+                                :candidate="candidate"
+                                @close="skillDialog = false; getProfile()"
+                            />
+                        </v-dialog>
+                    </v-card-title>
 
-                <v-btn
-                    color="teal"
-                    dark
-                    outlined
-                    v-bind="size"
-                    @click="jobDialog = true"
-                >
-                    <v-icon v-bind="size">mdi-pencil</v-icon>
-                </v-btn>
+                    <v-card-text>
+                        <v-chip
+                            class="mx-2 pa-4"
+                            color="indigo"
+                            dark
+                            v-for="(skill, index) in candidate.skills"
+                            :key="index"
+                        >
+                            {{ skill.name }}
+                        </v-chip>
+                    </v-card-text>
+                </v-card>
 
-                <v-dialog
-                    v-model="jobDialog"
-                    scrollable
-                    max-width="1000"
-                >
-                    <JobEdit
-                        :candidate="candidate"
-                        @close="jobDialog = false; getProfile()"
-                    />
-                </v-dialog>
-            </v-card-title>
+                <v-card class="mt-4">
+                    <v-card-title>
+                        <div>Academic History</div>
 
-            <v-card-text>
-                <v-row
-                    v-for="(job, index) in candidate.jobs"
-                    :key="index"
-                >
-                    <v-divider v-if="index > 0" class="my-4"></v-divider>
-                    <v-col cols="7" class="pb-1">
-                        <h3>{{ formatCompanyName(job) }}</h3>
-                    </v-col>
+                        <v-spacer></v-spacer>
 
-                    <v-col cols="5" class="text-end pb-1">
-                        <h3>{{ formatJobDate(job.startDate) }} - {{ formatJobDate(job.endDate) }}</h3>
-                    </v-col>
+                        <v-btn
+                            color="teal"
+                            dark
+                            outlined
+                            v-bind="size"
+                            @click="academicDialog = true"
+                        >
+                            <v-icon v-bind="size">mdi-pencil</v-icon>
+                        </v-btn>
 
-                    <v-col cols="12" class="pt-0">
-                        <h3>{{ job.title }} - {{ job.department.name }}</h3>
-                    </v-col>
+                        <v-dialog
+                            v-model="academicDialog"
+                            scrollable
+                            max-width="1000"
+                        >
+                            <AcademicEdit
+                                :candidate="candidate"
+                                @close="academicDialog = false; getProfile()"
+                            />
+                        </v-dialog>
+                    </v-card-title>
 
-                    <v-col cols="12" v-if="job.salary > 0">
-                        <h3>{{ job.salaryCurrency }} {{ job.salary }}</h3>
-                    </v-col>
+                    <v-card-text>
+                        <div
+                            v-for="(academic, index) in candidate.academics"
+                            :key="index"
+                        >
+                            <v-divider v-if="index > 0" class="my-4"></v-divider>
+                            <div class="d-flex justify-space-between">
+                                <h3>{{ academic.institution.name }}, {{ academic.institution.country }}</h3>
+                                <h3>{{ academic.yearObtained }}</h3>
+                            </div>
 
-                    <v-col cols="12">
-                        <div v-html="job.description"></div>
-                    </v-col>
-                </v-row>
-            </v-card-text>
-        </v-card>
+                            <div class="d-flex justify-space-between">
+                                <h3>{{ formatCourseName(academic.course) }}</h3>
+                                <v-spacer></v-spacer>
+                                <h3>{{ academic.course.level }}</h3>
+                            </div>
+                        </div>
+                    </v-card-text>
+                </v-card>
+
+                <v-card class="mt-4">
+                    <v-card-title>
+                        <div>Work Experience</div>
+
+                        <v-spacer></v-spacer>
+
+                        <v-btn
+                            color="teal"
+                            dark
+                            outlined
+                            v-bind="size"
+                            @click="jobDialog = true"
+                        >
+                            <v-icon v-bind="size">mdi-pencil</v-icon>
+                        </v-btn>
+
+                        <v-dialog
+                            v-model="jobDialog"
+                            scrollable
+                            max-width="1000"
+                        >
+                            <JobEdit
+                                :candidate="candidate"
+                                @close="jobDialog = false; getProfile()"
+                            />
+                        </v-dialog>
+                    </v-card-title>
+
+                    <v-card-text>
+                        <v-row
+                            v-for="(job, index) in candidate.jobs"
+                            :key="index"
+                        >
+                            <v-divider v-if="index > 0" class="my-4"></v-divider>
+                            <v-col cols="7" class="pb-1">
+                                <h3>{{ formatCompanyName(job) }}</h3>
+                            </v-col>
+
+                            <v-col cols="5" class="text-end pb-1">
+                                <h3>{{ formatJobDate(job.startDate) }} - {{ formatJobDate(job.endDate) }}</h3>
+                            </v-col>
+
+                            <v-col cols="12" class="pt-0">
+                                <h3>{{ job.title }} - {{ job.department.name }}</h3>
+                            </v-col>
+
+                            <v-col cols="12" v-if="job.salary > 0">
+                                <h3>{{ job.salaryCurrency }} {{ job.salary }}</h3>
+                            </v-col>
+
+                            <v-col cols="12">
+                                <div v-html="job.description"></div>
+                            </v-col>
+                        </v-row>
+                    </v-card-text>
+                </v-card>
+            </template>
+
+            <v-card v-else>
+                <v-card-title>Error</v-card-title>
+                <v-card-text>There was an error loading your profile. Please refresh the page.</v-card-text>
+            </v-card>
+        </template>
     </v-container>
 </template>
 
@@ -315,7 +324,7 @@ export default {
         return {
             loading: false,
             error: null,
-            candidate: {},
+            candidate: null,
 
             profileDialog: false,
             skillDialog: false,
@@ -360,6 +369,7 @@ export default {
                 this.error = e;
             } finally {
                 this.loading = false;
+                this.$emit('cancel-loading');
             }
         },
         open(url) {
@@ -394,7 +404,11 @@ export default {
         this.getProfile();
     },
     watch: {
-        '$route': 'getProfile'
+        '$route': () => {
+            if (!this.candidate) {
+                this.getProfile();
+            }
+        }
     }
 }
 </script>
