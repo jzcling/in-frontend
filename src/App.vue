@@ -1,8 +1,8 @@
 <template>
     <v-app>
-        <NavDrawer/>
+        <NavDrawer v-if="navdrawer"/>
 
-        <AppBar/>
+        <AppBar v-if="appbar"/>
 
         <v-main>
             <v-overlay 
@@ -20,6 +20,7 @@
 
             <router-view
                 @cancel-loading="loading = false"
+                @no-drawer="navdrawer = false;"
             ></router-view>
         </v-main>
     </v-app>
@@ -39,8 +40,10 @@ export default {
 
     data() {
         return {
-            loading: true
+            loading: true,
+            navdrawer: true,
+            appbar: true
         }
-    },
+    }
 };
 </script>
