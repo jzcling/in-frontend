@@ -175,6 +175,7 @@ export default {
                 this.error = e;
             } finally {
                 this.loading = false;
+                this.$emit('cancel-loading');
             }
         },
         async scanProject(project) {
@@ -200,7 +201,11 @@ export default {
         this.getProjects();
     },
     watch: {
-        '$route': 'getProjects'
+        '$route': () => {
+            if (this.projects.length == 0) {
+                this.getProjects();
+            }
+        }
     }
 }
 </script>
