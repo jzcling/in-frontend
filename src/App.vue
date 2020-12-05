@@ -5,7 +5,22 @@
         <AppBar/>
 
         <v-main>
-            <router-view/>
+            <v-overlay 
+                v-if="loading"
+                absolute
+                opacity="0.2"
+            >
+                <v-progress-circular
+                    :size="50"
+                    :width="5"
+                    color="indigo lighten-1"
+                    indeterminate
+                ></v-progress-circular>
+            </v-overlay>
+
+            <router-view
+                @cancel-loading="loading = false"
+            ></router-view>
         </v-main>
     </v-app>
 </template>
@@ -24,7 +39,7 @@ export default {
 
     data() {
         return {
-        
+            loading: true
         }
     },
 };
