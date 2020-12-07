@@ -16,9 +16,8 @@
                         class="mt-4"
                         :rules="avatarRules"
                         accept="image/png, image/jpeg, image/bmp"
-                        placeholder="Pick a profile picture"
                         prepend-icon="mdi-camera"
-                        label="Picture"
+                        label="Profile Picture"
                         hide-details="auto"
                         outlined
                         dense
