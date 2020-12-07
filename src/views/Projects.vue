@@ -24,6 +24,10 @@
                     />
                 </v-dialog>
             </v-card-title>
+
+            <v-card-subtitle>
+                Select your best projects from your list of public repositories
+            </v-card-subtitle>
         </v-card>
 
         <template v-if="projects.length > 0">
