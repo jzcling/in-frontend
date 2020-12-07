@@ -99,11 +99,12 @@ export default {
             }
             
             try {
-                await this.createOrUpdateProject();
+                var response = await this.createOrUpdateProject();
             } catch (e) {
                 this.error = e;
             } finally {
                 this.$emit('close');
+                this.$emit('scan-project', response.data)
             }
         },
         validationErrors(test, name) {

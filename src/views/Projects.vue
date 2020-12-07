@@ -21,6 +21,7 @@
                 >
                     <ProjectEdit
                         @close="projectDialog = false; getProjects()"
+                        @scan-project="project=>scanProject(project)"
                     />
                 </v-dialog>
             </v-card-title>
