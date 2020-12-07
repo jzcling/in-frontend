@@ -356,7 +356,6 @@ export default {
             // delete all job histories that have been removed
             var updatedJobs = this.edit.jobs.map(job => job.id);
             this.candidate.jobs.forEach(async job => {
-                console.log(updatedJobs.includes(job.id));
                 if (!updatedJobs.includes(job.id)) {
                     await this.deleteJob(job);
                 }
@@ -435,6 +434,7 @@ export default {
         this.getData();
         // create deep copy of candidate
         this.edit = JSON.parse(JSON.stringify(this.candidate));
+        // parse job dates
         for (let i = 0; i < this.edit.jobs.length; i++) {
             let job = this.edit.jobs[i];
             if (job.startDate) {
@@ -443,6 +443,9 @@ export default {
             if (job.endDate) {
                 this.endDate[i] = new Date(job.endDate).toISOString().substr(0, 10);
             }
+        }
+        if (this.edit.jobs.length == 0) {
+            this.addAcademic();
         }
     },
     watch: {

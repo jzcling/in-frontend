@@ -252,7 +252,6 @@ export default {
 
             // delete all academic histories that have been removed
             var updatedAcademics = this.edit.academics.map(academic => academic.id);
-            console.log(updatedAcademics);
             this.candidate.academics.forEach(async academic => {
                 if (!updatedAcademics.includes(academic.id)) {
                     await this.deleteAcademic(academic);
@@ -343,6 +342,9 @@ export default {
         this.getData();
         // create deep copy of candidate
         this.edit = JSON.parse(JSON.stringify(this.candidate));
+        if (this.edit.academics.length == 0) {
+            this.addAcademic();
+        }
     },
     validations: {
         edit: {
