@@ -54,17 +54,28 @@
 
                     <template v-else>
                         <v-col cols="12">
-                            <v-combobox
-                                v-model="academic.institution"
-                                :items="institutions"
-                                item-text="name"
-                                label="Institution"
-                                outlined
-                                dense
-                                hide-details="auto"
-                                @blur="handleInstitution(academic); $v.edit.academics.$each[index].institution.name.$touch()"
-                                :error-messages="validationErrors($v.edit.academics.$each[index].institution.name, 'Institution')"
-                            ></v-combobox>
+                            <div class="d-flex">
+                                <v-combobox
+                                    v-model="academic.institution"
+                                    :items="institutions"
+                                    item-text="name"
+                                    label="Institution"
+                                    outlined
+                                    dense
+                                    hide-details="auto"
+                                    @blur="handleInstitution(academic); $v.edit.academics.$each[index].institution.name.$touch()"
+                                    :error-messages="validationErrors($v.edit.academics.$each[index].institution.name, 'Institution')"
+                                ></v-combobox>
+
+                                <template v-if="$vuetify.breakpoint.smAndDown">
+                                    <v-btn
+                                        class="ml-1"
+                                        color="error"
+                                        icon
+                                        @click="removeAcademic(index)"
+                                    ><v-icon>mdi-delete</v-icon></v-btn>
+                                </template>
+                            </div>
                         </v-col>
 
                         <v-col cols="12">
@@ -81,16 +92,27 @@
                     </template>
 
                     <v-col cols="12" md="3">
-                        <v-text-field
-                            class="right-input"
-                            v-model="academic.yearObtained"
-                            label="Year Obtained"
-                            outlined
-                            dense
-                            hide-details="auto"
-                            @blur="$v.edit.academics.$each[index].yearObtained.$touch()"
-                            :error-messages="validationErrors($v.edit.academics.$each[index].yearObtained, 'Year Obtained')"
-                        ></v-text-field>
+                        <div class="d-flex">
+                            <v-text-field
+                                class="right-input"
+                                v-model="academic.yearObtained"
+                                label="Year Obtained"
+                                outlined
+                                dense
+                                hide-details="auto"
+                                @blur="$v.edit.academics.$each[index].yearObtained.$touch()"
+                                :error-messages="validationErrors($v.edit.academics.$each[index].yearObtained, 'Year Obtained')"
+                            ></v-text-field>
+                            
+                            <template v-if="$vuetify.breakpoint.mdAndUp">
+                                <v-btn
+                                    class="ml-2"
+                                    color="error"
+                                    icon
+                                    @click="removeAcademic(index)"
+                                ><v-icon>mdi-delete</v-icon></v-btn>
+                            </template>
+                        </div>
                     </v-col>
 
                     <v-col cols="12" md="6">
@@ -310,6 +332,9 @@ export default {
                 },
                 yearObtained: null
             });
+        },
+        removeAcademic(index) {
+            this.edit.academics.splice(index, 1);
         },
         handleInstitution(academic) {
             if (!academic.institution) {

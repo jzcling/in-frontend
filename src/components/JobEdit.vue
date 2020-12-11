@@ -66,17 +66,26 @@
 
                     <template v-else>
                         <v-col cols="12">
-                            <v-combobox
-                                v-model="job.company"
-                                :items="companies"
-                                item-text="name"
-                                label="Company"
-                                outlined
-                                dense
-                                hide-details="auto"
-                                @blur="$v.edit.jobs.$each[index].company.name.$touch()"
-                                :error-messages="validationErrors($v.edit.jobs.$each[index].company.name, 'Company')"
-                            ></v-combobox>
+                            <div class="d-flex">
+                                <v-combobox
+                                    v-model="job.company"
+                                    :items="companies"
+                                    item-text="name"
+                                    label="Company"
+                                    outlined
+                                    dense
+                                    hide-details="auto"
+                                    @blur="$v.edit.jobs.$each[index].company.name.$touch()"
+                                    :error-messages="validationErrors($v.edit.jobs.$each[index].company.name, 'Company')"
+                                ></v-combobox>
+                                
+                                <v-btn
+                                    class="ml-1"
+                                    color="error"
+                                    icon
+                                    @click="removeJob(index)"
+                                ><v-icon>mdi-delete</v-icon></v-btn>
+                            </div>
                         </v-col>
 
                         <v-col cols="12">
@@ -118,7 +127,7 @@
                                     <v-text-field
                                         label="Start Date"
                                         v-model="startDate[index]"
-                                        prepend-icon="mdi-calendar"
+                                        :prepend-icon="$vuetify.breakpoint.mdAndUp ? mdi-calendar : ''"
                                         readonly
                                         v-bind="attrs"
                                         v-on="on"
@@ -152,7 +161,7 @@
                                         class="ml-2"
                                         label="End Date"
                                         v-model="endDate[index]"
-                                        prepend-icon="mdi-calendar"
+                                        :prepend-icon="$vuetify.breakpoint.mdAndUp ? mdi-calendar : ''"
                                         readonly
                                         v-bind="attrs"
                                         v-on="on"
@@ -170,6 +179,15 @@
                                     type="month"
                                 ></v-date-picker>
                             </v-menu>
+                            
+                            <template v-if="$vuetify.breakpoint.mdAndUp">
+                                <v-btn
+                                    class="ml-2"
+                                    color="error"
+                                    icon
+                                    @click="removeJob(index)"
+                                ><v-icon>mdi-delete</v-icon></v-btn>
+                            </template>
                         </div>
                     </v-col>
 
@@ -422,6 +440,9 @@ export default {
             this.edit.jobs.push({
                 candidateId: this.candidate.id
             });
+        },
+        removeJob(index) {
+            this.edit.jobs.splice(index, 1);
         },
         validationErrors(test, name) {
             const errors = [];
