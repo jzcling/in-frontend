@@ -199,7 +199,10 @@ export default {
             return moment(date).format("DD MMM YYYY")
         },
         getRating(rating) {
-            return 6 - rating;
+            if (rating) {
+                return 6 - rating;
+            }
+            return 0;
         }
     },
     created() {
