@@ -348,7 +348,7 @@ export default {
             var existingCompanies = this.companies.map(company => company.name);
             var existingDepartments = this.departments.map(department => department.name);
 
-            this.edit.jobs.forEach(async job => {
+            for (var job of this.edit.jobs) {
                 var company = job.company;
                 // if company does not exist, create it
                 if (!company.id && !existingCompanies.includes(company.name)) {
@@ -369,15 +369,15 @@ export default {
                 } else {
                     await this.updateJob(job);
                 }
-            });
+            }
 
             // delete all job histories that have been removed
             var updatedJobs = this.edit.jobs.map(job => job.id);
-            this.candidate.jobs.forEach(async job => {
+            for (const job of this.candidate.jobs) {
                 if (!updatedJobs.includes(job.id)) {
                     await this.deleteJob(job);
                 }
-            });
+            }
         },
         async createJob(job) {
             if (job.description) {
@@ -419,7 +419,11 @@ export default {
             }, this.axiosConfig);
         },
         async deleteJob(job) {
-            return this.$axios.delete(this.$apiBase + '/v1/jobhistories/' + job.id, this.axiosConfig);
+            let config = this.axiosConfig;
+            config['data'] = {
+                candidateId: this.edit.id
+            }
+            return this.$axios.delete(this.$apiBase + '/v1/jobhistories/' + job.id, config);
         },
         async save() {
             this.$v.$touch();

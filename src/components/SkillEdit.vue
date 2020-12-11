@@ -86,7 +86,7 @@ export default {
         },
         async updateUserSkills() {
             var existingSkills = this.skills.map(skill => skill.name);
-            this.select.forEach(async skill => {
+            for (var skill of this.select) {
                 // if skill does not exist, create it
                 if (!skill.id && !existingSkills.includes(skill)) {
                     var response = await this.createSkill(skill);
@@ -95,16 +95,15 @@ export default {
 
                 // create user skill if not in current skills
                 if (!this.userSkills.includes(skill)) {
-                    this.createUserSkill(skill);
+                    await this.createUserSkill(skill);
                 }
-            });
 
             // delete all skills that have been removed
-            this.userSkills.forEach(skill => {
+            for (const skill of this.userSkills) {
                 if (!this.select.includes(skill)) {
-                    this.deleteUserSkill(skill);
+                    await this.deleteUserSkill(skill);
                 }
-            })
+            }
         },
         async createUserSkill(skill) {
             this.loading = true;

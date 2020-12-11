@@ -249,7 +249,7 @@ export default {
             var existingInstitutions = this.institutions.map(institution => institution.name + ", " + institution.country);
             var existingCourses = this.courses.map(course => course.name + ", " + course.level);
 
-            this.edit.academics.forEach(async academic => {
+            for (var academic of this.edit.academics) {
                 var institution = academic.institution;
                 // if institution does not exist, create it
                 if (!existingInstitutions.includes(institution.name + ", " + institution.country)) {
@@ -270,15 +270,15 @@ export default {
                 } else {
                     await this.updateAcademic(academic);
                 }
-            });
+            }
 
             // delete all academic histories that have been removed
             var updatedAcademics = this.edit.academics.map(academic => academic.id);
-            this.candidate.academics.forEach(async academic => {
+            for (const academic of this.candidate.academics) {
                 if (!updatedAcademics.includes(academic.id)) {
                     await this.deleteAcademic(academic);
                 }
-            });
+            }
         },
         async createAcademic(academic) {
             return this.$axios.post(this.$apiBase + '/v1/academichistories', {
@@ -300,7 +300,11 @@ export default {
             }, this.axiosConfig);
         },
         async deleteAcademic(academic) {
-            return this.$axios.delete(this.$apiBase + '/v1/academichistories/' + academic.id, this.axiosConfig);
+            let config = this.axiosConfig;
+            config['data'] = {
+                candidateId: this.edit.id
+            }
+            return this.$axios.delete(this.$apiBase + '/v1/academichistories/' + academic.id, config);
         },
         async save() {
             this.$v.$touch();
