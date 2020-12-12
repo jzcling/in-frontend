@@ -1,5 +1,8 @@
 <template>
-    <v-navigation-drawer app>
+    <v-navigation-drawer 
+        app
+        v-model="drawer"
+    >
         <v-list-item class="my-2">
             <v-list-item-content>
                 <v-list-item-title class="d-flex justify-center">
@@ -57,9 +60,15 @@
 <script>
 export default {
     name: 'NavDrawer',
-
+    props: {
+        open: {
+            required: true,
+            type: Boolean
+        }
+    },
     data() {
         return {
+            drawer: this.open,
             items: [
                 // {
                 // title: 'Dashboard', 
@@ -76,6 +85,11 @@ export default {
                     icon: 'mdi-github',
                     link: '/projects'
                 },
+                {
+                    title: 'Assessments',
+                    icon: 'mdi-fountain-pen-tip',
+                    link: '/assessments'
+                },
             ]
         }
     },
@@ -85,6 +99,16 @@ export default {
             this.$auth.logout({
                 returnTo: window.location.origin
             });
+        }
+    },
+    watch: {
+        drawer(val) {
+            if (!val) {
+                this.$emit('close-drawer');
+            }
+        },
+        open(val) {
+            this.drawer = val;
         }
     }
 }
