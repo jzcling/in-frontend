@@ -98,6 +98,8 @@
                             outlined
                             dense
                             hide-details="auto"
+                            @blur="$v.edit.scmUrl.$touch()"
+                            :error-messages="validationErrors($v.edit.scmUrl, 'Github URL')"
                         ></v-text-field>
                     </div>
                     <div 
@@ -110,6 +112,8 @@
                             outlined
                             dense
                             hide-details="auto"
+                            @blur="$v.edit.linkedInUrl.$touch()"
+                            :error-messages="validationErrors($v.edit.linkedInUrl, 'LinkedIn URL')"
                         ></v-text-field>
                     </div>
                     <div 
@@ -122,6 +126,8 @@
                             outlined
                             dense
                             hide-details="auto"
+                            @blur="$v.edit.websiteUrl.$touch()"
+                            :error-messages="validationErrors($v.edit.websiteUrl, 'Website URL')"
                         ></v-text-field>
                     </div>
                 </div>
@@ -349,7 +355,8 @@
 
 <script>
 import { validationMixin } from 'vuelidate'
-import { required } from 'vuelidate/lib/validators'
+import { required, helpers } from 'vuelidate/lib/validators'
+const urlValidator = helpers.regex('url', /^https{0,1}:\/\/.*/i);
 
 export default {
     name: 'ProfileEdit',
@@ -419,7 +426,8 @@ export default {
             const errors = [];
             if (!test.$dirty) return errors;
             !test.required && errors.push(name + ' is required.');
-            name == 'Contact Number' && !test.internationalNumber && errors.push(name + ' needs an international calling code, e.g. +65')
+            name == 'Contact Number' && !test.internationalNumber && errors.push(name + ' needs an international calling code, e.g. +65');
+            ['Github URL', 'LinkedIn URL', 'Website URL'].includes(name) && !test.urlValidator && errors.push(name + ' should start with http://');
             return errors;
         }
     },
@@ -449,7 +457,10 @@ export default {
                     return /^\+[0-9]*$/.test(contactNumber);
                 }
             },
-            residenceCity: { required }
+            residenceCity: { required },
+            linkedInUrl: { urlValidator },
+            scmUrl: { urlValidator },
+            websiteUrl: { urlValidator }
         }
     }
 }
