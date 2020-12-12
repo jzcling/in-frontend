@@ -27,11 +27,19 @@
             <v-card-actions>
                 <v-spacer></v-spacer>
                 <v-btn
+                    v-if="canStart"
                     class="px-4"
                     color="teal"
                     dark
                     @click="startAssessment"
                 >Start</v-btn>
+                <v-btn
+                    v-if="canContinue"
+                    class="px-4"
+                    color="teal"
+                    dark
+                    @click="continueAssessment"
+                >Continue</v-btn>
                 <v-spacer v-if="$vuetify.breakpoint.smAndDown"></v-spacer>
             </v-card-actions>
         </v-card>
@@ -39,6 +47,8 @@
 </template>
 
 <script>
+import moment from 'moment';
+
 export default {
     name: 'AssessmentShow',
     props: {
@@ -76,17 +86,29 @@ export default {
         },
         questions() {
             var val = this.assessment.questions;
-            console.log(val.map(q => q.id));
             if (this.assessment.randomise && val.length > 0) {
                 this.shuffleArray(val);
-                console.log(val.map(q => q.id));
             }
             if (this.assessment.numQuestions > 0) {
                 let limit = Math.min(this.assessment.numQuestions, val.length);
                 val = val.slice(0, limit);
-                console.log(val.map(q => q.id));
             }
             return val;
+        },
+        canStart() {
+            if (this.assessment.attempts.length > 0) {
+                let now = moment();
+                let lastStarted = moment(this.assessment.attempts[0].startedAt);
+                console.log(now.diff(lastStarted, 'seconds'));
+                return now.diff(lastStarted, 'months') > 3;
+            }
+            return true;
+        },
+        canContinue() {
+            if (this.assessment.attempts.length > 0) {
+                return this.assessment.attempts[0].status == 'In Progress';
+            }
+            return false;
         }
     },
     methods: {
@@ -95,6 +117,7 @@ export default {
             try {
                 var response = await this.$axios.get(this.$apiBase + '/v1/assessments/' + this.id, this.axiosConfig);
                 this.assessment = response.data;
+                console.log(this.assessment);
             } catch (e) {
                 this.error = e;
             } finally {
@@ -119,6 +142,9 @@ export default {
                 this.loading = false;
                 this.$router.push('/assessmentattempts/' + response.data.id);
             }
+        },
+        continueAssessment() {
+            this.$router.push('/assessmentattempts/' + this.assessment.attempts[0].id);
         },
         secondsToString(sec) {
             var days = Math.floor((sec % 31536000) / 86400); 

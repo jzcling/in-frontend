@@ -1,13 +1,23 @@
 <template>
     <v-container class="notfound">
-        <h1 class="text-center red lighten-4 mb-10 rounded">Page Not Found</h1>
+        <h2 class="text-center red lighten-4 mb-10 rounded">Page Not Found</h2>
+
         <v-img
             class="mx-auto"
             transition="scale-transition"
             src="@/assets/bg-404.svg"
-            max-height="668"
-            max-width="752"
+            contain
+            max-height="400"
+            max-width="550"
         ></v-img>
+
+        <div class="mt-4 d-flex justify-center">
+            <v-btn
+                color="teal"
+                dark
+                @click="redirectToHome"
+            >Back To Home</v-btn>
+        </div>
     </v-container>
 </template>
 
@@ -20,7 +30,13 @@ export default {
     },
     created() {
         this.$emit('cancel-loading');
-        this.$emit('no-drawer');
+        this.$emit('close-drawer');
+    },
+    methods: {
+        redirectToHome() {
+            this.$router.push('/');
+            this.$emit('open-drawer');
+        }
     }
 }
 </script>

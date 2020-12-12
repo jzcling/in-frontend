@@ -27,7 +27,8 @@
 
             <router-view
                 @cancel-loading="loading = false"
-                @no-drawer="navdrawer = false;"
+                @close-drawer="navdrawer = false"
+                @open-drawer="navdrawer = true"
             ></router-view>
         </v-main>
     </v-app>

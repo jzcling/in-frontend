@@ -122,8 +122,17 @@
                 </v-card-title>
 
                 <v-card-subtitle>
-                    This assessment has either been completed or has expired. Please contact HubbedIn if this is an error.
+                    Thank you for your time! This assessment has either been completed or has expired. Please contact HubbedIn if this is an error.
                 </v-card-subtitle>
+
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn
+                        color="teal"
+                        dark
+                        @click="redirectToAssessments"
+                    >Back To Assessments</v-btn>
+                </v-card-actions>
             </v-card>
         </template>
 
@@ -241,11 +250,15 @@ export default {
             data.completedAt = new Date();
             data.status = 'Completed';
             await this.updateAssessmentAttempt(data);
+        },
+        redirectToAssessments() {
+            this.$router.push('/assessments');
+            this.$emit('open-drawer');
         }
     },
     created() {
         this.getAssessmentAttempt();
-        this.$emit('no-drawer');
+        this.$emit('close-drawer');
     },
     watch: {
         '$route': 'getAssessmentAttempt'
