@@ -1,8 +1,15 @@
 <template>
     <v-app>
-        <NavDrawer v-if="navdrawer"/>
+        <NavDrawer 
+            v-if="navdrawer"
+            :open="openDrawer"
+            @close-drawer="openDrawer = false"
+        ></NavDrawer>
 
-        <AppBar v-if="appbar"/>
+        <AppBar 
+            v-if="appbar"
+            @toggle-nav-drawer="openDrawer = !openDrawer"
+        ></AppBar>
 
         <v-main>
             <v-overlay 
@@ -42,7 +49,9 @@ export default {
         return {
             loading: true,
             navdrawer: true,
-            appbar: true
+            appbar: true,
+
+            openDrawer: this.$vuetify.breakpoint.mdAndUp
         }
     }
 };
