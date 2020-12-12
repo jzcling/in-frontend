@@ -97,6 +97,7 @@ export default {
                 if (!this.userSkills.includes(skill)) {
                     await this.createUserSkill(skill);
                 }
+            }
 
             // delete all skills that have been removed
             for (const skill of this.userSkills) {
@@ -118,10 +119,15 @@ export default {
                 this.loading = false;
             }
         },
-        async deleteUserSkill(userSkill) {
+        async deleteUserSkill(skill) {
             this.loading = true;
+            let config = this.axiosConfig;
+            config['data'] = {
+                candidateId: this.candidate.id,
+                skillId: skill.id
+            }
             try {
-                await this.$axios.delete(this.$apiBase + '/v1/userskills/' + userSkill.id, this.axiosConfig);
+                await this.$axios.delete(this.$apiBase + '/v1/userskills', config);
             } catch (e) {
                 this.error = e;
             } finally {
