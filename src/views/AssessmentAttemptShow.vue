@@ -56,6 +56,31 @@
                 </template>
             </v-navigation-drawer>
 
+            <v-row>
+                <v-col cols="12">
+                    <vue-countdown-timer
+                        class="float-right"
+                        :start-time="startTime"
+                        :end-time="endTime"
+                        :end-label="'Time Left'"
+                        :end-text="'Time\'s up!'"
+                        :hour-txt="'h'"
+                        :minutes-txt="'m'"
+                        :seconds-txt="'s'"
+                    >
+                        <template slot="start-label" slot-scope="scope">
+                            <span class="countdown-text">{{scope.props.endLabel}}:</span>
+                        </template>
+
+                        <template slot="countdown" slot-scope="scope">
+                            <span class="countdown-card">{{scope.props.hours}}{{scope.props.hourTxt}}</span>
+                            <span class="countdown-card">{{scope.props.minutes}}{{scope.props.minutesTxt}}</span>
+                            <span class="countdown-card">{{scope.props.seconds}}{{scope.props.secondsTxt}}</span>
+                        </template>
+                    </vue-countdown-timer>
+                </v-col>
+            </v-row>
+
             <v-card v-if="question" class="px-4 py-2">
                 <v-card-title>
                     Question {{ qIndex }}
@@ -66,13 +91,31 @@
                 </v-card-subtitle>
 
                 <v-img
-                    v-if="question.imageUrl"
+                    v-if="qMediaType == 'image'"
                     contain
-                    :src="question.imageUrl"
+                    :src="question.mediaUrl"
                 ></v-img>
 
+                <vuetify-audio
+                    v-else-if="qMediaType == 'audio'"
+                    :file="question.mediaUrl"
+                    color="indigo"
+                    flat
+                ></vuetify-audio>
+
+                <div 
+                    class="d-flex justify-center"
+                    v-else-if="qMediaType == 'video'"
+                >
+                    <video-player
+                        class="vjs-big-play-centered"
+                        :options="videoPlayerOptions"
+                        :playsinline="true"
+                    ></video-player>
+                </div>
+
                 <v-card-text>
-                    <template v-if="question.options.length > 0">
+                    <template v-if="question.type == 'Multiple Choice' && question.options.length > 0">
                         <v-radio-group 
                             v-model="qAttempt.selection"
                             column
@@ -85,6 +128,33 @@
                                 class="black--text"
                             ></v-radio>
                         </v-radio-group>
+                    </template>
+
+                    <template v-else-if="question.type == 'Coding'">
+                        <v-row>
+                            <v-col cols="12">
+                                <v-select
+                                    class="float-right"
+                                    v-model="qAttempt.cmMode"
+                                    :items="cmModes"
+                                    label="Style"
+                                    outlined
+                                    dense
+                                    hide-details
+                                ></v-select>
+                            </v-col>
+                            <v-col cols="12" class="code-mirror">
+                                <codemirror v-model="qAttempt.text" :options="cmOptions"></codemirror>
+                            </v-col>
+                        </v-row>
+                    </template>
+
+                    <template v-else-if="question.type == 'Open'">
+                        <v-textarea
+                            v-model="qAttempt.text"
+                            outlined
+                            hide-details="auto"
+                        ></v-textarea>
                     </template>
                 </v-card-text>
 
@@ -165,6 +235,23 @@
 </template>
 
 <script>
+import { codemirror } from 'vue-codemirror';
+import 'codemirror/lib/codemirror.css';
+import 'codemirror/mode/javascript/javascript.js'
+import 'codemirror/mode/php/php.js'
+import 'codemirror/mode/python/python.js'
+import 'codemirror/mode/ruby/ruby.js'
+import 'codemirror/mode/swift/swift.js'
+import 'codemirror/mode/clike/clike.js'
+import 'codemirror/mode/lua/lua.js'
+import 'codemirror/mode/go/go.js'
+import 'codemirror/theme/base16-dark.css'
+
+import { videoPlayer } from 'vue-video-player'
+import 'video.js/dist/video-js.css'
+
+import moment from 'moment';
+
 export default {
     name: 'AssessmentAttemptShow',
     props: {
@@ -172,6 +259,11 @@ export default {
             required: true,
             type: String
         }
+    },
+    components: {
+        codemirror,
+        videoPlayer,
+        VuetifyAudio: () => import('vuetify-audio')
     },
     data() {
         return {
@@ -183,6 +275,36 @@ export default {
 
             endDialog: false,
 
+            cmOptions: {
+                mode: 'text/javascript',
+                theme: 'base16-dark',
+                lineNumbers: true,
+                line: true,
+                styleActiveLine: true,
+                matchBrackets: true
+            },
+            cmModes: ['text/javascript', 'text/x-php', 'text/x-java', 
+                'text/x-csharp', 'text/x-ruby', 'text/x-python', 
+                'text/x-go', 'text/x-swift', 'text/x-c++src', 
+                'text/x-lua', 'text/x-scala'],
+
+            videoPlayerOptions: {
+                language: 'en',
+                playbackRates: [0.7, 1.0, 1.5, 2.0],
+                sources: [{
+                    type: null,
+                    src: null
+                }],
+                width: this.$vuetify.breakpoint.mdAndUp ? '700px' : '320px'
+            },
+            videoMimeTypes: {
+                opus: 'video/ogg',
+                ogv: 'video/ogg',
+                mp4: 'video/mp4',
+                mov: 'video/mp4',
+                m4v: 'video/mp4'
+            },
+            
             axiosConfig: {
                 headers: {
                     Authorization: 'Bearer ' + this.$auth.token
@@ -192,7 +314,42 @@ export default {
     },
     computed: {
         qAttempt() {
-            return this.attempt.questionAttempts.find(attempt => attempt.questionId == this.question.id);
+            if (this.attempt) {
+                return this.attempt.questionAttempts.find(attempt => attempt.questionId == this.question.id);
+            }
+            return null;
+        },
+        qMediaType() {
+            if (this.question.mediaUrl.match(/\.(jpg|jpeg|png|gif|webp|svg)$/i)) {
+                return 'image';
+            }
+            if (this.question.mediaUrl.match(/\.(m4a|flac|mp3|wav|aac)$/i)) {
+                return 'audio';
+            }
+            if (this.question.mediaUrl.match(/\.(mp4|mov|m4v|opus|ogv|mkv)$/i)) {
+                return 'video';
+            }
+            return null
+        },
+        vMimeType() {
+            if (this.qMediaType == 'video') {
+                let url = this.question.mediaUrl;
+                let ext = url.slice((url.lastIndexOf(".") - 1 >>> 0) + 2);
+                return this.videoMimeTypes[ext];
+            }
+            return null;
+        },
+        vSrc() {
+            return this.question.mediaUrl;
+        },
+        startTime() {
+            return moment(this.attempt.startedAt).unix();
+        },
+        endTime() {
+            if (this.attempt.assessment.timeAllowed) {
+                return moment(this.attempt.startedAt).add(this.attempt.assessment.timeAllowed, 'seconds').unix();
+            }
+            return null;
         }
     },
     methods: {
@@ -237,6 +394,12 @@ export default {
             this.updateAttemptQuestion();
             this.question = this.attempt.questions[index];
             this.qIndex = index + 1;
+            if (this.qMediaType == 'video') {
+                this.videoPlayerOptions.sources[0] = {
+                    type: this.vMimeType,
+                    src: this.vSrc
+                }
+            }
         },
         getQuestionIndicator(question) {
             let attempt = this.attempt.questionAttempts.find(attempt => attempt.questionId == question.id);
@@ -261,7 +424,12 @@ export default {
         this.$emit('close-drawer');
     },
     watch: {
-        '$route': 'getAssessmentAttempt'
+        '$route': 'getAssessmentAttempt',
+        'qAttempt.cmMode': {
+            handler(val) {
+                this.cmOptions.mode = val;
+            }
+        }
     }
 }
 </script>
@@ -269,5 +437,28 @@ export default {
 <style scoped lang="scss">
 .black--text ::v-deep label {
     color: black;
+}
+
+.code-mirror ::v-deep .CodeMirror {
+    height: auto;
+}
+
+.countdown-text {
+    font-size: 1rem;
+    font-weight: 500;
+}
+.countdown-card {
+    font-size: 1.2rem;
+    color: white;
+    background: indianred;
+    border-radius: 0.5rem;
+    padding: 4px 12px 4px 12px;
+    margin: 4px;
+
+    @media only screen and (max-width: 600px) {
+        font-size: 1rem;
+        padding: 3px 8px 3px 8px;
+        margin: 4px;
+    }
 }
 </style>

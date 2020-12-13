@@ -19,18 +19,21 @@ Vue.use(Auth0Plugin, {
     domain,
     clientId,
     onRedirectCallback: appState => {
-      router.push(
-        appState && appState.targetUrl
-          ? appState.targetUrl
-          : window.location.pathname
-      );
+        router.push(
+            appState && appState.targetUrl
+            ? appState.targetUrl
+            : window.location.pathname
+        );
     }
-  });
+});
+
+import VueCountdownTimer from 'vuejs-countdown-timer';
+Vue.use(VueCountdownTimer);
 
 Vue.config.productionTip = false
 
 new Vue({
-  router,
-  vuetify,
-  render: h => h(App)
+    router,
+    vuetify,
+    render: h => h(App)
 }).$mount('#app')
