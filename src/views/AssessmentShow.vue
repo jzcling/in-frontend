@@ -99,7 +99,6 @@ export default {
             if (this.assessment.attempts.length > 0) {
                 let now = moment();
                 let lastStarted = moment(this.assessment.attempts[0].startedAt);
-                console.log(now.diff(lastStarted, 'seconds'));
                 return now.diff(lastStarted, 'months') > 3;
             }
             return true;
