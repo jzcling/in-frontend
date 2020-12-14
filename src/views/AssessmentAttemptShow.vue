@@ -327,14 +327,16 @@ export default {
             return null;
         },
         qMediaType() {
-            if (this.question.mediaUrl.match(/\.(jpg|jpeg|png|gif|webp|svg)$/i)) {
-                return 'image';
-            }
-            if (this.question.mediaUrl.match(/\.(m4a|flac|mp3|wav|aac)$/i)) {
-                return 'audio';
-            }
-            if (this.question.mediaUrl.match(/\.(mp4|mov|m4v|opus|ogv|mkv)$/i)) {
-                return 'video';
+            if (this.question) {
+                if (this.question.mediaUrl.match(/\.(jpg|jpeg|png|gif|webp|svg)$/i)) {
+                    return 'image';
+                }
+                if (this.question.mediaUrl.match(/\.(m4a|flac|mp3|wav|aac)$/i)) {
+                    return 'audio';
+                }
+                if (this.question.mediaUrl.match(/\.(mp4|mov|m4v|opus|ogv|mkv)$/i)) {
+                    return 'video';
+                }
             }
             return null
         },
@@ -401,12 +403,6 @@ export default {
             this.updateAttemptQuestion();
             this.question = this.attempt.questions[index];
             this.qIndex = index + 1;
-            if (this.qMediaType == 'video') {
-                this.videoPlayerOptions.sources[0] = {
-                    type: this.vMimeType,
-                    src: this.vSrc
-                }
-            }
         },
         getQuestionIndicator(question) {
             let attempt = this.attempt.questionAttempts.find(attempt => attempt.questionId == question.id);
@@ -435,6 +431,14 @@ export default {
         'qAttempt.cmMode': {
             handler(val) {
                 this.cmOptions.mode = val;
+            }
+        },
+        qMediaType(val) {
+            if (val == 'video') {
+                this.videoPlayerOptions.sources[0] = {
+                    type: this.vMimeType,
+                    src: this.vSrc
+                }
             }
         }
     }
