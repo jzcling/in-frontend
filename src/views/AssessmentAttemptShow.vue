@@ -67,6 +67,7 @@
                         :hour-txt="'h'"
                         :minutes-txt="'m'"
                         :seconds-txt="'s'"
+                        @end_callback="endAssessment"
                     >
                         <template slot="start-label" slot-scope="scope">
                             <span class="countdown-text">{{scope.props.endLabel}}:</span>
