@@ -29,7 +29,7 @@
                     <v-list-item
                         v-for="(question, index) in attempt.questions"
                         :key="index"
-                        @click="selectQuestion(index)"
+                        @click="attempt.assessment.canGoBack ? selectQuestion(index) : null"
                         :input-value="index == (qIndex - 1)"
                     >
                         <v-list-item-title>Question {{ index + 1 }}</v-list-item-title>
@@ -167,7 +167,7 @@
                     <v-spacer></v-spacer>
                     <v-btn
                         class="px-4"
-                        v-if="qIndex > 1"
+                        v-if="attempt.assessment.canGoBack && qIndex > 1"
                         color="indigo"
                         dark
                         @click="selectQuestion(qIndex - 2)"
@@ -177,7 +177,7 @@
                         v-if="qIndex < attempt.questions.length"
                         color="indigo"
                         dark
-                        @click="selectQuestion(qIndex)"
+                        @click="!attempt.assessment.canGoBack && qIndex == 1 ? (nextWarningDialog = true) : selectQuestion(qIndex)"
                     >Next</v-btn>
                     <v-btn
                         class="px-4"
@@ -236,6 +236,32 @@
                 </v-card-actions>
             </v-card>
         </v-dialog>
+
+        <v-dialog
+            v-model="nextWarningDialog"
+            max-width="400"
+        >
+            <v-card>
+                <v-card-title>
+                    Go to next question?
+                </v-card-title>
+                <v-card-text>
+                    You will not be able to go back for this assessment.
+                </v-card-text>
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn
+                        color="error"
+                        @click="nextWarningDialog = false"
+                    >No</v-btn>
+                    <v-btn
+                        color="teal"
+                        dark
+                        @click="selectQuestion(qIndex); nextWarningDialog = false;"
+                    >Yes</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
     </v-container>
 </template>
 
@@ -279,6 +305,7 @@ export default {
             qIndex: 1,
 
             endDialog: false,
+            nextWarningDialog: false,
 
             cmOptions: {
                 mode: 'text/javascript',
@@ -369,7 +396,9 @@ export default {
                 this.attempt = response.data;
                 console.log(this.attempt);
                 if (this.attempt.questions.length > 0) {
-                    this.question = this.attempt.questions[0];
+                    let currQ = Number(this.attempt.currentQuestion) || 0;
+                    this.question = this.attempt.questions[currQ];
+                    this.qIndex = currQ + 1;
                 }
             } catch (e) {
                 this.error = e;
@@ -401,6 +430,11 @@ export default {
         },
         selectQuestion(index) {
             this.updateAttemptQuestion();
+            
+            let data = this.attempt;
+            data.currentQuestion = index;
+            this.updateAssessmentAttempt(data);
+
             this.question = this.attempt.questions[index];
             this.qIndex = index + 1;
         },
