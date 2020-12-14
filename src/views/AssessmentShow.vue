@@ -1,5 +1,12 @@
 <template>
     <v-container fluid class="assessmentshow">
+        <v-alert
+            v-if="assessment && !canStart && !canContinue"
+            text
+            type="error"
+        >
+            Please try this test again after 3 months
+        </v-alert>
         <v-card class="px-4 py-2" v-if="assessment">
             <v-row>
                 <v-col cols="12" md="3">
@@ -96,7 +103,7 @@ export default {
             return val;
         },
         canStart() {
-            if (this.assessment.attempts.length > 0) {
+            if (this.assessment && this.assessment.attempts.length > 0) {
                 let now = moment();
                 let lastStarted = moment(this.assessment.attempts[0].startedAt);
                 return now.diff(lastStarted, 'months') > 3;
@@ -104,7 +111,7 @@ export default {
             return true;
         },
         canContinue() {
-            if (this.assessment.attempts.length > 0) {
+            if (this.assessment && this.assessment.attempts.length > 0) {
                 return this.assessment.attempts[0].status == 'In Progress';
             }
             return false;
