@@ -131,6 +131,7 @@ export default {
                 candidateId: this.$auth.userId,
                 status: 'In Progress',
                 startedAt: new Date(),
+                score: -1,
                 questions: this.questions
             }
             try {

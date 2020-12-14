@@ -77,6 +77,10 @@
                             <span class="countdown-card">{{scope.props.minutes}}{{scope.props.minutesTxt}}</span>
                             <span class="countdown-card">{{scope.props.seconds}}{{scope.props.secondsTxt}}</span>
                         </template>
+
+                        <template slot="end-text" slot-scope="scope">
+                            <span class="countdown-card">{{scope.props.endText}}</span>
+                        </template>
                     </vue-countdown-timer>
                 </v-col>
             </v-row>
@@ -315,7 +319,9 @@ export default {
     computed: {
         qAttempt() {
             if (this.attempt) {
-                return this.attempt.questionAttempts.find(attempt => attempt.questionId == this.question.id);
+                let attempt = this.attempt.questionAttempts.find(attempt => attempt.questionId == this.question.id);
+                attempt.selection = Number(attempt.selection);
+                return attempt;
             }
             return null;
         },
@@ -403,7 +409,7 @@ export default {
         },
         getQuestionIndicator(question) {
             let attempt = this.attempt.questionAttempts.find(attempt => attempt.questionId == question.id);
-            if (attempt && (attempt.selection != null || attempt.text != null)) {
+            if (attempt && (attempt.selection > -1 || attempt.text.length > 0)) {
                 return 'green';
             }
             return 'red';
