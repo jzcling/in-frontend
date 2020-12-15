@@ -31,7 +31,7 @@ export const useAuth0 = ({
                 popupOpen: false,
                 error: null,
                 
-                namespace: "https://hubbedin/id",
+                idKey: "https://hubbedin/id",
                 audience: "https://api.hubbedin.com"
             };
         },
@@ -96,7 +96,7 @@ export const useAuth0 = ({
                         contact_number: user.phone_number,
                         picture: user.picture
                     });
-                    this.user[this.namespace] = response.id;
+                    this.user[this.idKey] = response.id;
                 } catch (e) {
                     this.error = e;
                 }
@@ -131,12 +131,12 @@ export const useAuth0 = ({
                 // Initialize our internal authentication state
                 this.isAuthenticated = await this.auth0Client.isAuthenticated();
                 this.user = await this.auth0Client.getUser();
-                if (this.user && !this.user[this.namespace]) {
+                if (this.user && !this.user[this.idKey]) {
                     await this.createCandidate(this.user);
                 }
 
                 if (this.user) {
-                    this.userId = this.user[this.namespace];
+                    this.userId = this.user[this.idKey];
                     // get access token
                     this.token = await this.auth0Client.getTokenSilently({audience: this.audience});
                 }
