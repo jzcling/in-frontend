@@ -12,7 +12,16 @@
                     <v-avatar size="125">
                         <v-img :src="edit.picture" alt="Profile Picture" />
                     </v-avatar>
-                    <v-file-input
+                    <v-text-field
+                        v-model="edit.picture"
+                        label="Profile Pic URL"
+                        outlined
+                        dense
+                        hide-details="auto"
+                        @blur="$v.edit.picture.$touch()"
+                        :error-messages="validationErrors($v.edit.picture, 'Profile Pic URL')"
+                    ></v-text-field>
+                    <!-- <v-file-input
                         class="mt-4"
                         :rules="avatarRules"
                         accept="image/png, image/jpeg, image/bmp"
@@ -21,7 +30,7 @@
                         hide-details="auto"
                         outlined
                         dense
-                    ></v-file-input>
+                    ></v-file-input> -->
                 </div>
 
                 <div
@@ -460,7 +469,8 @@ export default {
             residenceCity: { required },
             linkedInUrl: { urlValidator },
             scmUrl: { urlValidator },
-            websiteUrl: { urlValidator }
+            websiteUrl: { urlValidator },
+            picture: { urlValidator }
         }
     }
 }
