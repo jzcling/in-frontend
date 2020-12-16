@@ -451,7 +451,7 @@ export default {
         validationErrors(test, name) {
             const errors = [];
             if (!test.$dirty) return errors;
-            !test.required && errors.push(name + ' is required.');
+            test.required === false && errors.push(name + ' is required.');
             return errors;
         }
     },

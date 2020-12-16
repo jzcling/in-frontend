@@ -110,8 +110,8 @@ export default {
         validationErrors(test, name) {
             const errors = [];
             if (!test.$dirty) return errors;
-            !test.required && errors.push(name + ' is required.');
-            name == 'Repository URL' && !test.isGit && errors.push(name + ' should end with .git')
+            test.required === false && errors.push(name + ' is required.');
+            test.isGit === false && errors.push(name + ' should end with .git')
             return errors;
         }
     },

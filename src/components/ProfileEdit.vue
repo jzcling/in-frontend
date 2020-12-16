@@ -425,9 +425,9 @@ export default {
         validationErrors(test, name) {
             const errors = [];
             if (!test.$dirty) return errors;
-            !test.required && errors.push(name + ' is required.');
-            name == 'Contact Number' && !test.internationalNumber && errors.push(name + ' needs an international calling code, e.g. +65');
-            ['Github URL', 'LinkedIn URL', 'Website URL'].includes(name) && !test.urlValidator && errors.push(name + ' should start with http://');
+            test.required === false && errors.push(name + ' is required.');
+            test.internationalNumber === false && errors.push(name + ' needs an international calling code, e.g. +65');
+            test.urlValidator === false && errors.push(name + ' should start with http://');
             return errors;
         }
     },
