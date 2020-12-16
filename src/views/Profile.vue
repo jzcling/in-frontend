@@ -180,7 +180,7 @@
 
                     <v-card-text>
                         <v-chip
-                            class="mx-2 pa-4"
+                            class="mx-2 my-1 pa-4"
                             color="indigo"
                             dark
                             v-for="(skill, index) in candidate.skills"
@@ -343,7 +343,7 @@ export default {
             return null;
         },
         expSalary() {
-            return this.candidate.expectedSalaryCurrency + " " + this.candidate.expectedSalary;
+            return this.candidate.expectedSalaryCurrency + " " + Number(this.candidate.expectedSalary).toLocaleString();
         },
         size () {
             const size = {xs:'x-small',sm:'small'}[this.$vuetify.breakpoint.name];
