@@ -153,6 +153,46 @@
 
                 <v-card class="mt-4">
                     <v-card-title>
+                        <div>Preferred Roles</div>
+
+                        <v-spacer></v-spacer>
+
+                        <v-btn
+                            color="teal"
+                            dark
+                            outlined
+                            v-bind="size"
+                            @click="roleDialog = true"
+                        >
+                            <v-icon v-bind="size">mdi-pencil</v-icon>
+                        </v-btn>
+
+                        <v-dialog
+                            v-model="roleDialog"
+                            max-width="1000"
+                        >
+                            <RoleEdit
+                                :candidate="candidate"
+                                @close="roleDialog = false; getProfile()"
+                            />
+                        </v-dialog>
+                    </v-card-title>
+
+                    <v-card-text>
+                        <v-chip
+                            class="mx-2 my-1 pa-4"
+                            color="indigo"
+                            dark
+                            v-for="(role, index) in candidate.preferredRoles"
+                            :key="index"
+                        >
+                            {{ role }}
+                        </v-chip>
+                    </v-card-text>
+                </v-card>
+
+                <v-card class="mt-4">
+                    <v-card-title>
                         <div>Skills</div>
 
                         <v-spacer></v-spacer>
@@ -307,6 +347,7 @@
 
 <script>
 import ProfileEdit from '@/components/ProfileEdit';
+import RoleEdit from '@/components/RoleEdit';
 import SkillEdit from '@/components/SkillEdit';
 import AcademicEdit from '@/components/AcademicEdit';
 import JobEdit from '@/components/JobEdit';
@@ -316,6 +357,7 @@ export default {
     name: 'Profile',
     components: {
         ProfileEdit,
+        RoleEdit,
         SkillEdit,
         AcademicEdit,
         JobEdit
@@ -327,6 +369,7 @@ export default {
             candidate: null,
 
             profileDialog: false,
+            roleDialog: false,
             skillDialog: false,
             academicDialog: false,
             jobDialog: false,
