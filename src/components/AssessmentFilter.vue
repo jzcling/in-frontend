@@ -79,7 +79,7 @@ export default {
             },
 
             difficultyLevels: ['Junior', 'Senior', 'Expert'],
-            types: ['Multiple Choice', 'Coding'],
+            types: ['Multiple Choice', 'Coding', 'Open', 'Mixed'],
 
             axiosConfig: {
                 headers: {
