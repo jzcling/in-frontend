@@ -394,7 +394,6 @@ export default {
             try {
                 var response = await this.$axios.get(this.$apiBase + '/v1/assessmentattempts/' + this.id, this.axiosConfig);
                 this.attempt = response.data;
-                console.log(this.attempt);
                 if (this.attempt.questions.length > 0) {
                     let currQ = Number(this.attempt.currentQuestion) || 0;
                     this.question = this.attempt.questions[currQ];

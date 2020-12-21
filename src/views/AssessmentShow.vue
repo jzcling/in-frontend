@@ -123,7 +123,6 @@ export default {
             try {
                 var response = await this.$axios.get(this.$apiBase + '/v1/assessments/' + this.id, this.axiosConfig);
                 this.assessment = response.data;
-                console.log(this.assessment);
             } catch (e) {
                 this.error = e;
             } finally {
