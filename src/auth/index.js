@@ -88,13 +88,14 @@ export const useAuth0 = ({
 
             async createCandidate(user) {
                 try {
-                    var response = await this.$axios.post(this.$apiBase + '/v1/candidates', {
-                        auth_id: user.sub,
-                        first_name: user.given_name || user.name,
-                        last_name: user.family_name || user.name,
+                    var response = await this.$axios.post(this.$apiBase + '/v1/users', {
+                        authId: user.sub,
+                        firstName: user.given_name || user.name,
+                        lastName: user.family_name || user.name,
                         email: user.email,
-                        contact_number: user.phone_number,
-                        picture: user.picture
+                        contactNumber: user.phone_number,
+                        picture: user.picture,
+                        roles: ['Candidate']
                     });
                     this.user[this.idKey] = response.id;
                 } catch (e) {

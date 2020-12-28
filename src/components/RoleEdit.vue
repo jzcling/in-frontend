@@ -6,7 +6,7 @@
 
         <v-card-text>
             <v-combobox
-                v-model="edit.preferredRoles"
+                v-model="edit.candidate.preferredRoles"
                 :items="roles"
                 label="Roles"
                 outlined
@@ -62,7 +62,7 @@ export default {
         async updateRoles() {
             this.loading = true;
             try {
-                await this.$axios.put(this.$apiBase + '/v1/candidates/' + this.edit.id, this.edit, this.axiosConfig);
+                await this.$axios.put(this.$apiBase + '/v1/users/' + this.edit.id, this.edit, this.axiosConfig);
             } catch (e) {
                 this.error = e;
             } finally {

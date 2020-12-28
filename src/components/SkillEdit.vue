@@ -42,7 +42,7 @@ export default {
     },
     computed: {
         userSkills() {
-            return this.candidate.skills || [];
+            return this.candidate.candidate.skills || [];
         }
     },
     data() {
@@ -110,7 +110,7 @@ export default {
             this.loading = true;
             try {
                 await this.$axios.post(this.$apiBase + '/v1/userskills', {
-                    candidate_id: this.candidate.id,
+                    candidate_id: this.candidate.candidateId,
                     skill_id: skill.id
                 }, this.axiosConfig);
             } catch (e) {
@@ -123,7 +123,7 @@ export default {
             this.loading = true;
             let config = this.axiosConfig;
             config['data'] = {
-                candidateId: this.candidate.id,
+                candidateId: this.candidate.candidateId,
                 skillId: skill.id
             }
             try {

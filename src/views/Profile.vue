@@ -17,7 +17,7 @@
                             <v-card-subtitle>
                                 <div>{{ candidate.email}}</div>
                                 <div>{{ candidate.contactNumber }}</div>
-                                <div>{{ candidate.residenceCity }}</div>
+                                <div>{{ candidate.candidate.residenceCity }}</div>
                             </v-card-subtitle>
                         </div>
 
@@ -27,21 +27,21 @@
                         >
                             <h3 
                                 class="d-flex align-content-center cursor-pointer" 
-                                @click="open(candidate.scmUrl)"
+                                @click="open(candidate.candidate.scmUrl)"
                             >
                                 <v-icon class="mr-2">mdi-github</v-icon>
                                 Github
                             </h3>
                             <h3 
                                 class="d-flex align-content-center cursor-pointer"
-                                @click="open(candidate.linkedInUrl)"
+                                @click="open(candidate.candidate.linkedInUrl)"
                             >
                                 <v-icon class="mr-2">mdi-linkedin</v-icon>
                                 LinkedIn
                             </h3>
                             <h3 
                                 class="d-flex align-content-center cursor-pointer"
-                                @click="open(candidate.websiteUrl)"
+                                @click="open(candidate.candidate.websiteUrl)"
                             >
                                 <v-icon class="mr-2">mdi-web</v-icon>
                                 Personal Website
@@ -76,21 +76,21 @@
                     >
                         <h3 
                             class="d-flex align-content-center cursor-pointer" 
-                            @click="open(candidate.scmUrl)"
+                            @click="open(candidate.candidate.scmUrl)"
                         >
                             <v-icon class="mr-2">mdi-github</v-icon>
                             Github
                         </h3>
                         <h3 
                             class="d-flex align-content-center cursor-pointer"
-                            @click="open(candidate.linkedInUrl)"
+                            @click="open(candidate.candidate.linkedInUrl)"
                         >
                             <v-icon class="mr-2">mdi-linkedin</v-icon>
                             LinkedIn
                         </h3>
                         <h3 
                             class="d-flex align-content-center cursor-pointer"
-                            @click="open(candidate.websiteUrl)"
+                            @click="open(candidate.candidate.websiteUrl)"
                         >
                             <v-icon class="mr-2">mdi-web</v-icon>
                             Personal Website
@@ -103,14 +103,14 @@
                                 <h4>Professional Summary</h4>
                             </v-col>
                             <v-col cols="12">
-                                <div>{{ candidate.summary }}</div>
+                                <div>{{ candidate.candidate.summary }}</div>
                             </v-col>
 
                             <v-col cols="6" md="3">
                                 <div>Education Level</div>
                             </v-col>
                             <v-col cols="6" md="3">
-                                <div>{{ candidate.educationLevel }}</div>
+                                <div>{{ candidate.candidate.educationLevel }}</div>
                             </v-col>
 
                             <v-col cols="6" md="3">
@@ -131,7 +131,7 @@
                                 <div>Nationality</div>
                             </v-col>
                             <v-col cols="6" md="3">
-                                <div>{{ candidate.nationality }}</div>
+                                <div>{{ candidate.candidate.nationality }}</div>
                             </v-col>
 
                             <v-col cols="6" md="3">
@@ -145,7 +145,7 @@
                                 <div>Notice Period (months)</div>
                             </v-col>
                             <v-col cols="6" md="3">
-                                <div>{{ candidate.noticePeriod }}</div>
+                                <div>{{ candidate.candidate.noticePeriod }}</div>
                             </v-col>
                         </v-row>
                     </v-card-text>
@@ -162,7 +162,7 @@
                             dark
                             outlined
                             v-bind="size"
-                            @click="roleDialog = true"
+                            @click="clickRoleEdit"
                         >
                             <v-icon v-bind="size">mdi-pencil</v-icon>
                         </v-btn>
@@ -183,7 +183,7 @@
                             class="mx-2 my-1 pa-4"
                             color="indigo"
                             dark
-                            v-for="(role, index) in candidate.preferredRoles"
+                            v-for="(role, index) in candidate.candidate.preferredRoles"
                             :key="index"
                         >
                             {{ role }}
@@ -202,7 +202,7 @@
                             dark
                             outlined
                             v-bind="size"
-                            @click="skillDialog = true"
+                            @click="clickSkillEdit"
                         >
                             <v-icon v-bind="size">mdi-pencil</v-icon>
                         </v-btn>
@@ -223,7 +223,7 @@
                             class="mx-2 my-1 pa-4"
                             color="indigo"
                             dark
-                            v-for="(skill, index) in candidate.skills"
+                            v-for="(skill, index) in candidate.candidate.skills"
                             :key="index"
                         >
                             {{ skill.name }}
@@ -242,7 +242,7 @@
                             dark
                             outlined
                             v-bind="size"
-                            @click="academicDialog = true"
+                            @click="clickAcademicEdit"
                         >
                             <v-icon v-bind="size">mdi-pencil</v-icon>
                         </v-btn>
@@ -261,7 +261,7 @@
 
                     <v-card-text>
                         <div
-                            v-for="(academic, index) in candidate.academics"
+                            v-for="(academic, index) in candidate.candidate.academics"
                             :key="index"
                         >
                             <v-divider v-if="index > 0" class="my-4"></v-divider>
@@ -290,7 +290,7 @@
                             dark
                             outlined
                             v-bind="size"
-                            @click="jobDialog = true"
+                            @click="clickJobEdit"
                         >
                             <v-icon v-bind="size">mdi-pencil</v-icon>
                         </v-btn>
@@ -309,7 +309,7 @@
 
                     <v-card-text>
                         <v-row
-                            v-for="(job, index) in candidate.jobs"
+                            v-for="(job, index) in candidate.candidate.jobs"
                             :key="index"
                         >
                             <v-divider v-if="index > 0" class="my-4"></v-divider>
@@ -342,6 +342,24 @@
                 <v-card-text>There was an error loading your profile. Please refresh the page.</v-card-text>
             </v-card>
         </template>
+
+        <v-dialog
+            v-model="updateProfileDialog"
+            max-width="400"
+        >
+            <v-card>
+                <v-card-title>Update Profile</v-card-title>
+                <v-card-text>Please update your profile first.</v-card-text>
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn
+                        color="teal"
+                        dark
+                        @click="updateProfileDialog = false"
+                    >OK</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
     </v-container>
 </template>
 
@@ -373,6 +391,7 @@ export default {
             skillDialog: false,
             academicDialog: false,
             jobDialog: false,
+            updateProfileDialog: false
         }
     },
     computed: {
@@ -380,13 +399,16 @@ export default {
             return this.candidate.firstName + " " + this.candidate.lastName;
         },
         birthday() {
-            if (this.candidate.birthday) {
-                return moment(this.candidate.birthday).format('DD MMM YYYY');
+            if (this.candidate.candidate.birthday) {
+                return moment(this.candidate.candidate.birthday).format('DD MMM YYYY');
             }
             return null;
         },
         expSalary() {
-            return this.candidate.expectedSalaryCurrency + " " + Number(this.candidate.expectedSalary).toLocaleString();
+            if (this.candidate.candidate.expectedSalary > 0) {
+                return this.candidate.candidate.expectedSalaryCurrency + " " + Number(this.candidate.candidate.expectedSalary).toLocaleString();
+            }
+            return null;
         },
         size () {
             const size = {xs:'x-small',sm:'small'}[this.$vuetify.breakpoint.name];
@@ -408,6 +430,9 @@ export default {
                     }
                 });
                 this.candidate = response.data;
+                if (!this.candidate.candidate) {
+                    this.candidate.candidate = {}
+                }
             } catch (e) {
                 this.error = e;
             } finally {
@@ -441,6 +466,35 @@ export default {
                 return moment(date).format('MMM YYYY');
             }
             return 'Current';
+        },
+
+        clickRoleEdit() {
+            if (this.candidate.candidateId > 0) { 
+                this.roleDialog = true;
+            } else { 
+                this.updateProfileDialog = true;
+            }
+        },
+        clickSkillEdit() {
+            if (this.candidate.candidateId > 0) { 
+                this.skillDialog = true;
+            } else { 
+                this.updateProfileDialog = true;
+            }
+        },
+        clickAcademicEdit() {
+            if (this.candidate.candidateId > 0) { 
+                this.academicDialog = true;
+            } else { 
+                this.updateProfileDialog = true;
+            }
+        },
+        clickJobEdit() {
+            if (this.candidate.candidateId > 0) { 
+                this.jobDialog = true;
+            } else { 
+                this.updateProfileDialog = true;
+            }
         }
     },
     created() {

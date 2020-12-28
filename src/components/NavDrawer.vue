@@ -86,10 +86,15 @@ export default {
                     link: '/projects'
                 },
                 {
-                    title: 'Assessments',
-                    icon: 'mdi-fountain-pen-tip',
-                    link: '/assessments'
+                    title: 'Jobs Available',
+                    icon: 'mdi-format-list-text',
+                    link: '/joblistings'
                 },
+                // {
+                //     title: 'Assessments',
+                //     icon: 'mdi-fountain-pen-tip',
+                //     link: '/assessments'
+                // },
             ]
         }
     },

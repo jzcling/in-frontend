@@ -17,7 +17,7 @@
         <v-card-text
             max-height="600"
         >
-            <template v-for="(academic, index) in edit.academics">
+            <template v-for="(academic, index) in edit.candidate.academics">
                 <v-divider :key="'div-' + index" v-if="index > 0" class="my-4"></v-divider>
                 <v-row
                     :key="index"
@@ -33,8 +33,8 @@
                                     outlined
                                     dense
                                     hide-details="auto"
-                                    @blur="handleInstitution(academic); $v.edit.academics.$each[index].institution.name.$touch()"
-                                    :error-messages="validationErrors($v.edit.academics.$each[index].institution.name, 'Institution')"
+                                    @blur="handleInstitution(academic); $v.edit.candidate.academics.$each[index].institution.name.$touch()"
+                                    :error-messages="validationErrors($v.edit.candidate.academics.$each[index].institution.name, 'Institution')"
                                 ></v-combobox>
                             </v-col>
 
@@ -45,8 +45,8 @@
                                     outlined
                                     dense
                                     hide-details="auto"
-                                    @blur="$v.edit.academics.$each[index].institution.country.$touch()"
-                                    :error-messages="validationErrors($v.edit.academics.$each[index].institution.country, 'Country')"
+                                    @blur="$v.edit.candidate.academics.$each[index].institution.country.$touch()"
+                                    :error-messages="validationErrors($v.edit.candidate.academics.$each[index].institution.country, 'Country')"
                                 ></v-text-field>
                             </v-col>
                         </v-row>
@@ -63,8 +63,8 @@
                                     outlined
                                     dense
                                     hide-details="auto"
-                                    @blur="handleInstitution(academic); $v.edit.academics.$each[index].institution.name.$touch()"
-                                    :error-messages="validationErrors($v.edit.academics.$each[index].institution.name, 'Institution')"
+                                    @blur="handleInstitution(academic); $v.edit.candidate.academics.$each[index].institution.name.$touch()"
+                                    :error-messages="validationErrors($v.edit.candidate.academics.$each[index].institution.name, 'Institution')"
                                 ></v-combobox>
 
                                 <template v-if="$vuetify.breakpoint.smAndDown">
@@ -85,8 +85,8 @@
                                 outlined
                                 dense
                                 hide-details="auto"
-                                @blur="$v.edit.academics.$each[index].institution.country.$touch()"
-                                :error-messages="validationErrors($v.edit.academics.$each[index].institution.country, 'Country')"
+                                @blur="$v.edit.candidate.academics.$each[index].institution.country.$touch()"
+                                :error-messages="validationErrors($v.edit.candidate.academics.$each[index].institution.country, 'Country')"
                             ></v-text-field>
                         </v-col>
                     </template>
@@ -100,8 +100,8 @@
                                 outlined
                                 dense
                                 hide-details="auto"
-                                @blur="$v.edit.academics.$each[index].yearObtained.$touch()"
-                                :error-messages="validationErrors($v.edit.academics.$each[index].yearObtained, 'Year Obtained')"
+                                @blur="$v.edit.candidate.academics.$each[index].yearObtained.$touch()"
+                                :error-messages="validationErrors($v.edit.candidate.academics.$each[index].yearObtained, 'Year Obtained')"
                             ></v-text-field>
                             
                             <template v-if="$vuetify.breakpoint.mdAndUp">
@@ -124,8 +124,8 @@
                             outlined
                             dense
                             hide-details="auto"
-                            @blur="handleCourse(academic); $v.edit.academics.$each[index].course.name.$touch()"
-                            :error-messages="validationErrors($v.edit.academics.$each[index].course.name, 'Course')"
+                            @blur="handleCourse(academic); $v.edit.candidate.academics.$each[index].course.name.$touch()"
+                            :error-messages="validationErrors($v.edit.candidate.academics.$each[index].course.name, 'Course')"
                         ></v-combobox>
                     </v-col>
 
@@ -147,8 +147,8 @@
                             outlined
                             dense
                             hide-details="auto"
-                            @blur="$v.edit.academics.$each[index].course.level.$touch()"
-                            :error-messages="validationErrors($v.edit.academics.$each[index].course.level, 'Level')"
+                            @blur="$v.edit.candidate.academics.$each[index].course.level.$touch()"
+                            :error-messages="validationErrors($v.edit.candidate.academics.$each[index].course.level, 'Level')"
                         ></v-select>
                     </v-col>
                 </v-row>
@@ -249,7 +249,7 @@ export default {
             var existingInstitutions = this.institutions.map(institution => institution.name + ", " + institution.country);
             var existingCourses = this.courses.map(course => course.name + ", " + course.level);
 
-            for (var academic of this.edit.academics) {
+            for (var academic of this.edit.candidate.academics) {
                 var institution = academic.institution;
                 // if institution does not exist, create it
                 if (!existingInstitutions.includes(institution.name + ", " + institution.country)) {
@@ -273,8 +273,8 @@ export default {
             }
 
             // delete all academic histories that have been removed
-            var updatedAcademics = this.edit.academics.map(academic => academic.id);
-            for (const academic of this.candidate.academics) {
+            var updatedAcademics = this.edit.candidate.academics.map(academic => academic.id);
+            for (const academic of this.candidate.candidate.academics) {
                 if (!updatedAcademics.includes(academic.id)) {
                     await this.deleteAcademic(academic);
                 }
@@ -282,7 +282,7 @@ export default {
         },
         async createAcademic(academic) {
             return this.$axios.post(this.$apiBase + '/v1/academichistories', {
-                candidateId: this.candidate.id,
+                candidateId: this.candidate.candidateId,
                 institutionId: academic.institution.id,
                 courseId: academic.course.id,
                 yearObtained: academic.yearObtained,
@@ -292,7 +292,7 @@ export default {
         async updateAcademic(academic) {
             return this.$axios.put(this.$apiBase + '/v1/academichistories/' + academic.id, {
                 id: academic.id,
-                candidateId: this.candidate.id,
+                candidateId: this.candidate.candidateId,
                 institutionId: academic.institution.id,
                 courseId: academic.course.id,
                 yearObtained: academic.yearObtained,
@@ -321,8 +321,8 @@ export default {
             }
         },
         addAcademic() {
-            this.edit.academics = this.edit.academics || [];
-            this.edit.academics.push({
+            this.edit.candidate.academics = this.edit.candidate.academics || [];
+            this.edit.candidate.academics.push({
                 candidateId: this.candidate.id,
                 institution: {
                     id: null,
@@ -338,7 +338,7 @@ export default {
             });
         },
         removeAcademic(index) {
-            this.edit.academics.splice(index, 1);
+            this.edit.candidate.academics.splice(index, 1);
         },
         handleInstitution(academic) {
             if (!academic.institution) {
@@ -371,23 +371,25 @@ export default {
         this.getData();
         // create deep copy of candidate
         this.edit = JSON.parse(JSON.stringify(this.candidate));
-        if (this.edit.academics.length == 0) {
+        if (this.edit.candidate.academics.length == 0) {
             this.addAcademic();
         }
     },
     validations: {
         edit: {
-            academics: {
-                $each: {
-                    institution: {
-                        name: { required },
-                        country: { required }
-                    },
-                    course: {
-                        name: { required },
-                        level: { required }
-                    },
-                    yearObtained: { required }
+            candidate: {
+                academics: {
+                    $each: {
+                        institution: {
+                            name: { required },
+                            country: { required }
+                        },
+                        course: {
+                            name: { required },
+                            level: { required }
+                        },
+                        yearObtained: { required }
+                    }
                 }
             }
         }

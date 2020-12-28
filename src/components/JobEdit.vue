@@ -17,7 +17,7 @@
         <v-card-text
             max-height="600"
         >
-            <template v-for="(job, index) in edit.jobs">
+            <template v-for="(job, index) in edit.candidate.jobs">
                 <v-divider :key="'div-' + index" v-if="index > 0" class="my-4"></v-divider>
                 <v-row
                     :key="index"
@@ -33,8 +33,8 @@
                                     outlined
                                     dense
                                     hide-details="auto"
-                                    @blur="$v.edit.jobs.$each[index].company.name.$touch()"
-                                    :error-messages="validationErrors($v.edit.jobs.$each[index].company.name, 'Company')"
+                                    @blur="$v.edit.candidate.jobs.$each[index].company.$touch()"
+                                    :error-messages="validationErrors($v.edit.candidate.jobs.$each[index].company, 'Company')"
                                 ></v-combobox>
                             </v-col>
 
@@ -45,8 +45,8 @@
                                     outlined
                                     dense
                                     hide-details="auto"
-                                    @blur="$v.edit.jobs.$each[index].city.$touch()"
-                                    :error-messages="validationErrors($v.edit.jobs.$each[index].city, 'City')"
+                                    @blur="$v.edit.candidate.jobs.$each[index].city.$touch()"
+                                    :error-messages="validationErrors($v.edit.candidate.jobs.$each[index].city, 'City')"
                                 ></v-text-field>
                             </v-col>
 
@@ -57,8 +57,8 @@
                                     outlined
                                     dense
                                     hide-details="auto"
-                                    @blur="$v.edit.jobs.$each[index].country.$touch()"
-                                    :error-messages="validationErrors($v.edit.jobs.$each[index].country, 'Country')"
+                                    @blur="$v.edit.candidate.jobs.$each[index].country.$touch()"
+                                    :error-messages="validationErrors($v.edit.candidate.jobs.$each[index].country, 'Country')"
                                 ></v-text-field>
                             </v-col>
                         </v-row>
@@ -75,8 +75,8 @@
                                     outlined
                                     dense
                                     hide-details="auto"
-                                    @blur="$v.edit.jobs.$each[index].company.name.$touch()"
-                                    :error-messages="validationErrors($v.edit.jobs.$each[index].company.name, 'Company')"
+                                    @blur="$v.edit.candidate.jobs.$each[index].company.$touch()"
+                                    :error-messages="validationErrors($v.edit.candidate.jobs.$each[index].company, 'Company')"
                                 ></v-combobox>
                                 
                                 <v-btn
@@ -95,8 +95,8 @@
                                 outlined
                                 dense
                                 hide-details="auto"
-                                @blur="$v.edit.jobs.$each[index].city.$touch()"
-                                :error-messages="validationErrors($v.edit.jobs.$each[index].city, 'City')"
+                                @blur="$v.edit.candidate.jobs.$each[index].city.$touch()"
+                                :error-messages="validationErrors($v.edit.candidate.jobs.$each[index].city, 'City')"
                             ></v-text-field>
                         </v-col>
 
@@ -107,8 +107,8 @@
                                 outlined
                                 dense
                                 hide-details="auto"
-                                @blur="$v.edit.jobs.$each[index].country.$touch()"
-                                :error-messages="validationErrors($v.edit.jobs.$each[index].country, 'Country')"
+                                @blur="$v.edit.candidate.jobs.$each[index].country.$touch()"
+                                :error-messages="validationErrors($v.edit.candidate.jobs.$each[index].country, 'Country')"
                             ></v-text-field>
                         </v-col>
                     </template>
@@ -127,7 +127,7 @@
                                     <v-text-field
                                         label="Start Date"
                                         v-model="startDate[index]"
-                                        :prepend-icon="$vuetify.breakpoint.mdAndUp ? mdi-calendar : ''"
+                                        :prepend-icon="$vuetify.breakpoint.mdAndUp ? 'mdi-calendar' : ''"
                                         readonly
                                         v-bind="attrs"
                                         v-on="on"
@@ -135,8 +135,8 @@
                                         dense
                                         hide-details="auto"
                                         clearable
-                                        @blur="$v.edit.jobs.$each[index].startDate.$touch()"
-                                        :error-messages="validationErrors($v.edit.jobs.$each[index].startDate, 'Start Date')"
+                                        @blur="$v.edit.candidate.jobs.$each[index].startDate.$touch()"
+                                        :error-messages="validationErrors($v.edit.candidate.jobs.$each[index].startDate, 'Start Date')"
                                     ></v-text-field>
                                 </template>
                                 <v-date-picker
@@ -161,7 +161,7 @@
                                         class="ml-2"
                                         label="End Date"
                                         v-model="endDate[index]"
-                                        :prepend-icon="$vuetify.breakpoint.mdAndUp ? mdi-calendar : ''"
+                                        :prepend-icon="$vuetify.breakpoint.mdAndUp ? 'mdi-calendar' : ''"
                                         readonly
                                         v-bind="attrs"
                                         v-on="on"
@@ -198,8 +198,8 @@
                             outlined
                             dense
                             hide-details="auto"
-                            @blur="$v.edit.jobs.$each[index].title.$touch()"
-                            :error-messages="validationErrors($v.edit.jobs.$each[index].title, 'Title')"
+                            @blur="$v.edit.candidate.jobs.$each[index].title.$touch()"
+                            :error-messages="validationErrors($v.edit.candidate.jobs.$each[index].title, 'Title')"
                         ></v-text-field>
                     </v-col>
 
@@ -212,8 +212,8 @@
                             outlined
                             dense
                             hide-details="auto"
-                            @blur="$v.edit.jobs.$each[index].department.name.$touch()"
-                            :error-messages="validationErrors($v.edit.jobs.$each[index].department, 'Department')"
+                            @blur="$v.edit.candidate.jobs.$each[index].department.$touch()"
+                            :error-messages="validationErrors($v.edit.candidate.jobs.$each[index].department, 'Department')"
                         ></v-combobox>
                     </v-col>
 
@@ -348,7 +348,7 @@ export default {
             var existingCompanies = this.companies.map(company => company.name);
             var existingDepartments = this.departments.map(department => department.name);
 
-            for (var job of this.edit.jobs) {
+            for (var job of this.edit.candidate.jobs) {
                 var company = job.company;
                 // if company does not exist, create it
                 if (!company.id && !existingCompanies.includes(company.name)) {
@@ -372,8 +372,8 @@ export default {
             }
 
             // delete all job histories that have been removed
-            var updatedJobs = this.edit.jobs.map(job => job.id);
-            for (const job of this.candidate.jobs) {
+            var updatedJobs = this.edit.candidate.jobs.map(job => job.id);
+            for (const job of this.candidate.candidate.jobs) {
                 if (!updatedJobs.includes(job.id)) {
                     await this.deleteJob(job);
                 }
@@ -385,7 +385,7 @@ export default {
             }
 
             return this.$axios.post(this.$apiBase + '/v1/jobhistories', {
-                candidateId: this.candidate.id,
+                candidateId: this.candidate.candidateId,
                 companyId: job.company.id,
                 departmentId: job.department.id,
                 country: job.country,
@@ -405,7 +405,7 @@ export default {
 
             return this.$axios.put(this.$apiBase + '/v1/jobhistories/' + job.id, {
                 id: job.id,
-                candidateId: this.candidate.id,
+                candidateId: this.candidate.candidateId,
                 companyId: job.company.id,
                 departmentId: job.department.id,
                 country: job.country,
@@ -440,13 +440,13 @@ export default {
             }
         },
         addJob() {
-            this.edit.jobs = this.edit.jobs || [];
-            this.edit.jobs.push({
+            this.edit.candidate.jobs = this.edit.candidate.jobs || [];
+            this.edit.candidate.jobs.push({
                 candidateId: this.candidate.id
             });
         },
         removeJob(index) {
-            this.edit.jobs.splice(index, 1);
+            this.edit.candidate.jobs.splice(index, 1);
         },
         validationErrors(test, name) {
             const errors = [];
@@ -460,8 +460,8 @@ export default {
         // create deep copy of candidate
         this.edit = JSON.parse(JSON.stringify(this.candidate));
         // parse job dates
-        for (let i = 0; i < this.edit.jobs.length; i++) {
-            let job = this.edit.jobs[i];
+        for (let i = 0; i < this.edit.candidate.jobs.length; i++) {
+            let job = this.edit.candidate.jobs[i];
             if (job.startDate) {
                 this.startDate[i] = new Date(job.startDate).toISOString().substr(0, 10);
             }
@@ -469,8 +469,8 @@ export default {
                 this.endDate[i] = new Date(job.endDate).toISOString().substr(0, 10);
             }
         }
-        if (this.edit.jobs.length == 0) {
-            this.addAcademic();
+        if (this.edit.candidate.jobs.length == 0) {
+            this.addJob();
         }
     },
     watch: {
@@ -495,9 +495,9 @@ export default {
                 for (let i of Object.keys(val)) {
                     let date = val[i];
                     if (date) {
-                        this.edit.jobs[i].startDate = new Date(date);
+                        this.edit.candidate.jobs[i].startDate = new Date(date);
                     } else {
-                        this.edit.jobs[i].startDate = null;
+                        this.edit.candidate.jobs[i].startDate = null;
                     }
                 }
             },
@@ -508,9 +508,9 @@ export default {
                 for (let i of Object.keys(val)) {
                     let date = val[i];
                     if (date) {
-                        this.edit.jobs[i].endDate = new Date(date);
+                        this.edit.candidate.jobs[i].endDate = new Date(date);
                     } else {
-                        this.edit.jobs[i].endDate = null;
+                        this.edit.candidate.jobs[i].endDate = null;
                     }
                 }
             },
@@ -519,18 +519,16 @@ export default {
     },
     validations: {
         edit: {
-            jobs: {
-                $each: {
-                    company: {
-                        name: { required }
-                    },
-                    department: {
-                        name: { required }
-                    },
-                    city: { required },
-                    country: { required },
-                    title: { required },
-                    startDate: { required }
+            candidate: {
+                jobs: {
+                    $each: {
+                        company: { required },
+                        department: { required },
+                        city: { required },
+                        country: { required },
+                        title: { required },
+                        startDate: { required }
+                    }
                 }
             }
         }
