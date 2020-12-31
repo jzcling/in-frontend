@@ -33,7 +33,7 @@ const routes = [
     {
         path: '/joblistings/:id',
         name: 'JoblistingShow',
-        component: () => import(/* webpackChunkName: "joblistings" */ '../views/JoblistingShow.vue'),
+        component: () => import(/* webpackChunkName: "joblistingshow" */ '../views/JoblistingShow.vue'),
         beforeEnter: authGuard
     },
     // {

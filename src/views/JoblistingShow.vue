@@ -1,8 +1,16 @@
 <template>
     <v-container fluid class="joblistings">
-        <Joblisting
-            :job="job"
-        ></Joblisting>
+        <template v-if="!loading">
+            <Joblisting
+                v-if="job"
+                :job="job"
+            ></Joblisting>
+
+            <v-card v-else>
+                <v-card-title>Error</v-card-title>
+                <v-card-text>There was an error loading this job. Please refresh the page.</v-card-text>
+            </v-card>
+        </template>
     </v-container>
 </template>
 
@@ -13,12 +21,6 @@ export default {
     name: 'Joblistings',
     components: {
         Joblisting
-    },
-    props: {
-        id: {
-            required: true,
-            type: [String, Number]
-        }
     },
     data() {
         return {
@@ -37,7 +39,7 @@ export default {
         async getJob() {
             this.loading = true;
             try {
-                var response = await this.$axios.get(this.$apiBase + '/v1/joblistings/' + this.id, this.axiosConfig);
+                var response = await this.$axios.get(this.$apiBase + '/v1/joblistings/' + this.$route.params.id, this.axiosConfig);
                 this.job = response.data;
             } catch (e) {
                 this.error = e;

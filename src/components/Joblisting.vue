@@ -46,14 +46,14 @@
                     <div>{{ job.seniorityLevel }}</div>
                 </v-col>
 
+                <v-col cols="12" md="6" v-if="job.yearsExperience">
+                    <div>Experience (Years)</div>
+                    <div>{{ job.yearsExperience }}</div>
+                </v-col>
+
                 <v-col cols="12" md="6" v-if="job.employmentType">
                     <div>Employment Type</div>
                     <div>{{ job.employmentType }}</div>
-                </v-col>
-
-                <v-col cols="12" md="6" v-if="job.company.size > 0">
-                    <div>Company Size</div>
-                    <div>{{ job.company.size }}</div>
                 </v-col>
                 
                 <v-col cols="12" md="6" v-if="job.function">
@@ -67,8 +67,13 @@
                 </v-col>
 
                 <v-col cols="12" md="6">
-                    <div>Remote Position Available</div>
+                    <div>Remote Position Available?</div>
                     <div>{{ job.remote ? 'Yes' : 'No' }}</div>
+                </v-col>
+
+                <v-col cols="12" md="6" v-if="job.company.size > 0">
+                    <div>Company Size</div>
+                    <div>{{ job.company.size }}</div>
                 </v-col>
             </v-row>
         </v-card-text>

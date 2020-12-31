@@ -12,7 +12,7 @@
 
                         <v-list-item
                             :key="index"
-                            @click="selectedJob = item"
+                            @click="clickJob(item)"
                         >
                             <v-list-item-avatar>
                                 <v-img :src="item.company.logoUrl"></v-img>
@@ -83,6 +83,13 @@ export default {
             } finally {
                 this.loading = false;
                 this.$emit('cancel-loading');
+            }
+        },
+        clickJob(job) {
+            if (this.$vuetify.breakpoint.mdAndUp) {
+                this.selectedJob = job;
+            } else {
+                this.$router.push('/joblistings/' + job.id);
             }
         },
         parseTimeAgo(date) {

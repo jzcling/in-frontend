@@ -13,6 +13,7 @@
                         <v-img :src="edit.picture" alt="Profile Picture" />
                     </v-avatar>
                     <v-text-field
+                        class="mt-4"
                         v-model="edit.picture"
                         label="Profile Pic URL"
                         outlined
