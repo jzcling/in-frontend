@@ -77,7 +77,6 @@ export default {
                 if (this.jobs.length > 0) {
                     this.selectedJob = this.jobs[0];
                 }
-                console.log(this.jobs);
             } catch (e) {
                 this.error = e;
             } finally {
